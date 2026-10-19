@@ -1,0 +1,375 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", sans-serif;
+  --font-body: "Outfit", sans-serif;
+}
+
+@layer base {
+  :root,
+  html,
+  body,
+  input,
+  button,
+  select,
+  textarea,
+  table {
+    font-family: "Outfit", sans-serif;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-size: 16px;
+  }
+
+  code,
+  kbd,
+  samp,
+  pre,
+  .font-mono {
+    font-family: "Outfit", sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+
+  button,
+  [role="button"],
+  a,
+  select,
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  button[disabled],
+  [role="button"][aria-disabled="true"],
+  select:disabled {
+    cursor: not-allowed;
+  }
+
+  /* Form fields enhanced sizing and comfort */
+  input[type="text"],
+  input[type="number"],
+  input[type="date"],
+  input[type="month"],
+  input[type="search"],
+  input[type="password"],
+  input[type="tel"],
+  input[type="email"],
+  select,
+  textarea {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  /* Table and Block/Card readable typography defaults */
+  table,
+  table.text-xs,
+  table.text-sm {
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  table thead th,
+  table thead th.text-xs,
+  table thead th.text-\[10px\],
+  table thead th.text-\[11px\],
+  table thead tr th {
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.025em;
+  }
+
+  table tbody td,
+  table tbody td.text-xs,
+  table tbody td.text-\[10px\],
+  table tbody td.text-\[11px\],
+  table tbody tr td {
+    font-size: 0.975rem;
+    line-height: 1.45;
+  }
+
+  table tbody td .font-mono,
+  table tbody td.font-mono,
+  table td span.font-mono,
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Smooth custom scrollbars for table and tab overflow */
+  ::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+.max-w-380 {
+  max-width: 95rem; /* 1520px / 380 units */
+  width: 100%;
+}
+
+.max-w-420 {
+  max-width: 105rem; /* 1680px / 420 units */
+  width: 100%;
+}
+
+/* ========================================================== */
+/* THERMAL & DESKTOP SLIP PRINT STYLES                        */
+/* ========================================================== */
+@media print {
+  @page {
+    margin: 0 !important;
+    size: auto;
+  }
+
+  /* Reset document flow and background for pure paper printing */
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .min-h-screen {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  /* When ANY printable slip or modal is active, completely hide the entire background app */
+  .print-modal-active #root,
+  body:has(.printable-modal-overlay) #root,
+  body:has(#printable-receipt-modal) #root,
+  body:has(#printable-return-modal) #root,
+  body:has(#printable-expense-slip-modal) #root,
+  body:has(#printable-vendor-ledger) #root,
+  body:has(#printable-vendor-voucher) #root,
+  body:has(#printable-khata-slip-modal) #root,
+  body:has(#printable-load-slip-modal) #root,
+  body:has(#printable-barcode-modal) #root {
+    display: none !important;
+  }
+
+  /* Universal chrome hidden during all prints */
+  header,
+  footer,
+  nav,
+  aside,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* Universal printable modal container setup:
+     When any print modal is open, ensure it fills the printable page cleanly
+     without pushing extra blank pages */
+  .printable-modal-overlay,
+  #printable-receipt-modal,
+  #printable-return-modal,
+  #printable-expense-slip-modal,
+  #printable-vendor-ledger,
+  #printable-vendor-voucher,
+  #printable-khata-slip-modal,
+  #printable-load-slip-modal,
+  #printable-barcode-modal {
+    position: static !important;
+    inset: auto !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: block !important;
+    backdrop-filter: none !important;
+    overflow: visible !important;
+  }
+
+  .printable-modal-card,
+  #printable-receipt-card,
+  #printable-return-card,
+  #printable-expense-card,
+  #printable-khata-slip,
+  #printable-load-slip,
+  #printable-barcode-card,
+  #printable-vendor-ledger-card,
+  #printable-vendor-voucher-card {
+    position: static !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #000000 !important;
+    overflow: visible !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Paper Size Specific Print Dimensions */
+  /* BC-96AC Mini Printer and 58mm Thermal Roll (zero side margins, compact easy-to-read font) */
+  #printable-receipt-card.paper-size-58mm,
+  .print-paper-58mm {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.15 !important;
+  }
+
+  /* 80mm / 3-inch POS Thermal Receipt Printer (80(72.1)mm full printable width - zero margins) */
+  #printable-receipt-card.paper-size-80mm,
+  .print-paper-80mm {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.2 !important;
+  }
+
+  /* A4 Standard Full-Page Invoice */
+  #printable-receipt-card.paper-size-a4,
+  .print-paper-a4 {
+    width: 100% !important;
+    max-width: 190mm !important;
+    margin: 0 auto !important;
+    padding: 5mm 4mm !important;
+    font-size: 8.5pt !important;
+    line-height: 1.25 !important;
+  }
+
+  /* A5 Half-Page Invoice */
+  #printable-receipt-card.paper-size-a5,
+  .print-paper-a5 {
+    width: 100% !important;
+    max-width: 140mm !important;
+    margin: 0 auto !important;
+    padding: 3mm 2.5mm !important;
+    font-size: 8pt !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Single copy full-width zero-margin wrapper */
+  .printable-single-copy {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    page-break-before: avoid !important;
+    break-before: avoid !important;
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Clean full-report print (Monthly Reports) */
+  #printable-monthly-report {
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    page-break-inside: auto !important;
+  }
+
+  /* Force all fonts in printable receipts to be solid dark black - no faint/light gray fonts in print */
+  .printable-modal-overlay,
+  .printable-modal-overlay *,
+  .printable-modal-card,
+  .printable-modal-card *,
+  #printable-receipt-modal,
+  #printable-receipt-modal *,
+  #printable-receipt-card,
+  #printable-receipt-card *,
+  #printable-expense-card,
+  #printable-expense-card *,
+  #printable-khata-slip,
+  #printable-khata-slip *,
+  #printable-load-slip,
+  #printable-load-slip *,
+  #printable-barcode-card,
+  #printable-barcode-card *,
+  #printable-vendor-ledger-card,
+  #printable-vendor-ledger-card *,
+  #printable-vendor-voucher-card,
+  #printable-vendor-voucher-card * {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+    text-shadow: none !important;
+    opacity: 1 !important;
+  }
+
+  .printable-modal-card p,
+  .printable-modal-card span,
+  .printable-modal-card div,
+  .printable-modal-card h1,
+  .printable-modal-card h2,
+  .printable-modal-card h3,
+  .printable-modal-card h4,
+  .printable-modal-card td,
+  .printable-modal-card th,
+  .printable-modal-card strong,
+  .printable-modal-card em {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+  }
+
+  /* Strengthen labels, notes, headers, and codes so they print bold and crisp with maximum contrast */
+  .printable-modal-card [class*="text-slate-"],
+  .printable-modal-card [class*="text-gray-"],
+  .printable-modal-card [class*="text-zinc-"],
+  .printable-modal-card [class*="text-emerald-"] {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+  }
+
+  /* Ensure lines, dividers, and borders are solid dark lines */
+  .printable-modal-card [class*="border-slate-"],
+  .printable-modal-card [class*="divide-slate-"],
+  .printable-modal-card .border,
+  .printable-modal-card .border-t,
+  .printable-modal-card .border-b,
+  .printable-modal-card .border-dashed {
+    border-color: #000000 !important;
+  }
+
+  /* Clean background fills so paper prints crisp white without light gray wash */
+  .printable-modal-card [class*="bg-slate-"],
+  .printable-modal-card [class*="bg-emerald-"] {
+    background-color: transparent !important;
+    background: transparent !important;
+  }
+}

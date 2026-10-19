@@ -1,0 +1,6 @@
+{
+  "name": "POS System",
+  "description": "POS System with encrypted backend login authentication, inventory tracking, cash sales recording with automatic receipt slip printing, and EasyPaisa & JazzCash daily reconciliation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

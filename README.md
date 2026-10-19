@@ -1,2 +1,4 @@
-# POS-System
-Offline POS System for Mobile and Computer Accessories, Also EP / JC and Load
+1. Install dependencies:
+   `npm install`
+2. Run the app:
+   `npm run dev`
