@@ -35,6 +35,7 @@ import {
   LoadTxType,
 } from "../types";
 import { formatPKR } from "../utils/currency";
+import { getBusinessDate, getDateNDaysAgoBusiness } from "../utils/businessDate";
 import { LoadDailyModal } from "./LoadDailyModal";
 import { LoadTxModal } from "./LoadTxModal";
 import { TablePagination } from "./TablePagination";
@@ -91,12 +92,21 @@ export const LoadDashboard: React.FC<LoadDashboardProps> = ({
   onRefresh,
   isWorker = false,
 }) => {
-  const todayStr = useMemo(() => {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, "0");
-    const d = String(now.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
+  const [todayStr, setTodayStr] = useState<string>(() => getBusinessDate());
+
+  useEffect(() => {
+    const checkDate = () => {
+      const current = getBusinessDate();
+      setTodayStr((prev) => {
+        if (prev !== current) {
+          setSelectedDate((oldSel) => (oldSel === prev ? current : oldSel));
+          return current;
+        }
+        return prev;
+      });
+    };
+    const interval = setInterval(checkDate, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   // Modals state
@@ -120,10 +130,8 @@ export const LoadDashboard: React.FC<LoadDashboardProps> = ({
     "DAILY_RECORDS",
   );
 
-  // Selected date for quick focus (Worker defaults to todayStr)
-  const [selectedDate, setSelectedDate] = useState<string>(
-    isWorker ? todayStr : records.length > 0 ? records[0].date : todayStr,
-  );
+  // Selected date for quick focus (defaults strictly to active Pakistan business date)
+  const [selectedDate, setSelectedDate] = useState<string>(todayStr);
 
   // Filters & Search for transactions
   const [txSearch, setTxSearch] = useState("");
@@ -143,12 +151,7 @@ export const LoadDashboard: React.FC<LoadDashboardProps> = ({
   const [endDate, setEndDate] = useState<string>("");
 
   const getDateNDaysAgo = (days: number): string => {
-    const d = new Date();
-    d.setDate(d.getDate() - (days - 1));
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
+    return getDateNDaysAgoBusiness(days - 1, todayStr);
   };
 
   const handleApplyPresetDays = (days: number) => {

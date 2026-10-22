@@ -28,6 +28,7 @@ import {
 } from 'lucide-react';
 import { ExpenseItem, ExpensePaymentMethod, AuthUser, StoreSettings } from '../types';
 import { formatPKR } from '../utils/currency';
+import { getBusinessDate, getDateNDaysAgoBusiness } from '../utils/businessDate';
 
 interface ExpensesProps {
   expenses: ExpenseItem[];
@@ -78,16 +79,19 @@ export const Expenses: React.FC<ExpensesProps> = ({
   // Navigation / Mode state
   const [activeSubTab, setActiveSubTab] = useState<'daily' | 'weekly' | 'monthly' | 'all'>('daily');
 
-  // Today string YYYY-MM-DD
-  const getTodayStr = () => {
-    const d = new Date();
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  };
+  // Today string YYYY-MM-DD (Pakistan Business Date)
+  const getTodayStr = () => getBusinessDate();
 
-  const todayStr = useMemo(() => getTodayStr(), []);
+  const [todayStr, setTodayStr] = useState<string>(() => getBusinessDate());
+
+  useEffect(() => {
+    const checkDate = () => {
+      const current = getBusinessDate();
+      setTodayStr((prev) => (prev !== current ? current : prev));
+    };
+    const interval = setInterval(checkDate, 15000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Selected date for the Daily Expense Repeater
   const [selectedDate, setSelectedDate] = useState<string>(todayStr);
@@ -103,9 +107,9 @@ export const Expenses: React.FC<ExpensesProps> = ({
 
   // Filter State ("From Date" -> "To Date")
   const [filterFromDate, setFilterFromDate] = useState<string>(() => {
-    // Default to start of current month
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-01`;
+    // Default to start of current business month
+    const cur = getBusinessDate();
+    return `${cur.substring(0, 7)}-01`;
   });
   const [filterToDate, setFilterToDate] = useState<string>(todayStr);
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -335,9 +339,7 @@ export const Expenses: React.FC<ExpensesProps> = ({
       setFilterFromDate(today);
       setFilterToDate(today);
     } else if (preset === 'yesterday') {
-      const yDate = new Date();
-      yDate.setDate(yDate.getDate() - 1);
-      const yStr = yDate.toISOString().split('T')[0];
+      const yStr = getDateNDaysAgoBusiness(1, today);
       setFilterFromDate(yStr);
       setFilterToDate(yStr);
     } else if (preset === 'this_week') {
@@ -357,9 +359,8 @@ export const Expenses: React.FC<ExpensesProps> = ({
       setFilterFromDate(lastMon.toISOString().split('T')[0]);
       setFilterToDate(lastSun.toISOString().split('T')[0]);
     } else if (preset === 'this_month') {
-      const y = now.getFullYear();
-      const m = String(now.getMonth() + 1).padStart(2, '0');
-      setFilterFromDate(`${y}-${m}-01`);
+      const mStr = today.substring(0, 7);
+      setFilterFromDate(`${mStr}-01`);
       setFilterToDate(today);
     } else if (preset === 'last_month') {
       const lastMDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);

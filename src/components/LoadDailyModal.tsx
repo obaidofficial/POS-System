@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { LoadDailyRecord } from "../types";
 import { formatPKR } from "../utils/currency";
+import { getBusinessDate } from "../utils/businessDate";
 
 interface LoadDailyModalProps {
   isOpen: boolean;
@@ -35,7 +36,7 @@ export const LoadDailyModal: React.FC<LoadDailyModalProps> = ({
   onSave,
   existingDates,
 }) => {
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = getBusinessDate();
 
   const [date, setDate] = useState<string>(todayStr);
 

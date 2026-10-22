@@ -33,6 +33,7 @@ import { InventoryItem, SaleItemLine, Sale, ScreenProtector } from "../types";
 import { storage } from "../services/storage";
 import { formatPKR } from "../utils/currency";
 import { soundController } from "../utils/audio";
+import { getBusinessDate, getPakistanFormattedTime } from "../utils/businessDate";
 import { authService } from "../services/auth";
 
 interface RecordSalePageProps {
@@ -69,9 +70,7 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
   const [rows, setRows] = useState<SaleRowItem[]>([]);
   const [customerName, setCustomerName] = useState("Walk in");
   const [invoiceNumber, setInvoiceNumber] = useState("");
-  const [date, setDate] = useState(
-    () => new Date().toISOString().split("T")[0],
-  );
+  const [date, setDate] = useState<string>(() => getBusinessDate());
   const [notes, setNotes] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [orderDiscount, setOrderDiscount] = useState<number>(0);
@@ -188,11 +187,7 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
   const [saleTime, setSaleTime] = useState<string>(() => {
     const is24h =
       storage.getStoreSettings().printerSettings?.timeFormat === "24h";
-    return new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: !is24h,
-    });
+    return getPakistanFormattedTime(is24h ? "24h" : "12h");
   });
 
   // Barcode quick scan input
@@ -735,7 +730,7 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
 
       const createdSale = storage.recordSale({
         invoiceNumber: finalInvoiceNo,
-        date: date || new Date().toISOString().split("T")[0],
+        date: date || getBusinessDate(),
         time: saleTime || undefined,
         cashierName: cashierName || undefined,
         customerName: customerName.trim(),

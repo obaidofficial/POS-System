@@ -35,6 +35,7 @@ import {
   EpJcTxType,
 } from "../types";
 import { formatPKR } from "../utils/currency";
+import { getBusinessDate, getDateNDaysAgoBusiness } from "../utils/businessDate";
 import { EpJcDailyModal } from "./EpJcDailyModal";
 import { EpJcTxModal } from "./EpJcTxModal";
 import { TablePagination } from "./TablePagination";
@@ -65,12 +66,21 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
   onRefresh,
   isWorker = false,
 }) => {
-  const todayStr = useMemo(() => {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, "0");
-    const d = String(now.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
+  const [todayStr, setTodayStr] = useState<string>(() => getBusinessDate());
+
+  useEffect(() => {
+    const checkDate = () => {
+      const current = getBusinessDate();
+      setTodayStr((prev) => {
+        if (prev !== current) {
+          setSelectedDate((oldSel) => (oldSel === prev ? current : oldSel));
+          return current;
+        }
+        return prev;
+      });
+    };
+    const interval = setInterval(checkDate, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   // Modals state
@@ -94,10 +104,8 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
     "DAILY_RECORDS",
   );
 
-  // Selected date for quick focus (Worker defaults to todayStr, Admin defaults to today or newest)
-  const [selectedDate, setSelectedDate] = useState<string>(
-    isWorker ? todayStr : records.length > 0 ? records[0].date : todayStr,
-  );
+  // Selected date for quick focus (defaults strictly to active Pakistan business date)
+  const [selectedDate, setSelectedDate] = useState<string>(todayStr);
 
   // Filters & Search for transactions
   const [txSearch, setTxSearch] = useState("");
@@ -117,12 +125,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
   const [endDate, setEndDate] = useState<string>("");
 
   const getDateNDaysAgo = (days: number): string => {
-    const d = new Date();
-    d.setDate(d.getDate() - (days - 1));
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
+    return getDateNDaysAgoBusiness(days - 1, todayStr);
   };
 
   const handleApplyPresetDays = (days: number) => {
@@ -162,10 +165,77 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
     getStoredPageSize("epjc_txs", 30),
   );
 
+  // Normalize all records to ensure custom bank accounts and totals are always synchronized
+  const normalizedRecords = useMemo(() => {
+    return records.map((r) => {
+      const epOpening = Number(r.epOpening) || 0;
+      const jcOpening = Number(r.jcOpening) || 0;
+      const epJcCashOpening =
+        r.epJcCashOpening !== undefined
+          ? Number(r.epJcCashOpening) || 0
+          : (Number(r.epCashOpening) || 0) + (Number(r.jcCashOpening) || 0);
+      const extraAddition = Number(r.extraAddition) || 0;
+
+      const customAccounts = Array.isArray(r.customAccounts)
+        ? r.customAccounts.map((ca, idx) => ({
+            id: ca.id || `ca_${idx}_${r.id}`,
+            name: (ca.name || '').trim() || `Account ${idx + 1}`,
+            openingBalance: Number(ca.openingBalance) || 0,
+            closingBalance: Number(ca.closingBalance) || 0,
+          }))
+        : [];
+
+      const customOpening = customAccounts.reduce(
+        (sum, ca) => sum + (Number(ca.openingBalance) || 0),
+        0
+      );
+      const customClosing = customAccounts.reduce(
+        (sum, ca) => sum + (Number(ca.closingBalance) || 0),
+        0
+      );
+
+      const totalOpening = epOpening + jcOpening + epJcCashOpening + extraAddition + customOpening;
+
+      const epClosing = Number(r.epClosing) || 0;
+      const jcClosing = Number(r.jcClosing) || 0;
+      const epJcCashClosing =
+        r.epJcCashClosing !== undefined
+          ? Number(r.epJcCashClosing) || 0
+          : (Number(r.epCashClosing) || 0) + (Number(r.jcCashClosing) || 0);
+      const epJcExpense = Number(r.epJcExpense) || 0;
+      const totalClosing = epClosing + jcClosing + epJcCashClosing + epJcExpense + customClosing;
+
+      const netDifference = totalClosing - totalOpening;
+      const resultType: 'PROFIT' | 'LOSS' | 'BALANCED' =
+        netDifference > 0 ? 'PROFIT' : netDifference < 0 ? 'LOSS' : 'BALANCED';
+
+      return {
+        ...r,
+        epOpening,
+        jcOpening,
+        epJcCashOpening,
+        epCashOpening: r.epCashOpening !== undefined ? Number(r.epCashOpening) : epJcCashOpening,
+        jcCashOpening: r.jcCashOpening !== undefined ? Number(r.jcCashOpening) : 0,
+        extraAddition,
+        customAccounts,
+        totalOpening,
+        epClosing,
+        jcClosing,
+        epJcCashClosing,
+        epCashClosing: r.epCashClosing !== undefined ? Number(r.epCashClosing) : epJcCashClosing,
+        jcCashClosing: r.jcCashClosing !== undefined ? Number(r.jcCashClosing) : 0,
+        epJcExpense,
+        totalClosing,
+        netDifference,
+        resultType,
+      };
+    });
+  }, [records]);
+
   // Current selected day's record (if exists)
   const activeDayRecord = useMemo(() => {
-    return records.find((r) => r.date === selectedDate);
-  }, [records, selectedDate]);
+    return normalizedRecords.find((r) => r.date === selectedDate);
+  }, [normalizedRecords, selectedDate]);
 
   // Calculations for all-time totals
   const summaryMetrics = useMemo(() => {
@@ -174,7 +244,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
     let netProfitDays = 0;
     let netLossDays = 0;
 
-    records.forEach((r) => {
+    normalizedRecords.forEach((r) => {
       totalOpeningSum += r.totalOpening;
       totalClosingSum += r.totalClosing;
       if (r.netDifference > 0) netProfitDays++;
@@ -194,7 +264,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
     });
 
     return {
-      totalRecords: records.length,
+      totalRecords: normalizedRecords.length,
       totalOpeningSum,
       totalClosingSum,
       netVariance,
@@ -205,11 +275,11 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
       withdrawVolume,
       totalCommission,
     };
-  }, [records, transactions]);
+  }, [normalizedRecords, transactions]);
 
   // Present Day (Today) Metrics
   const todayMetrics = useMemo(() => {
-    const todayRecord = records.find((r) => r.date === todayStr);
+    const todayRecord = normalizedRecords.find((r) => r.date === todayStr);
     const todayTxs = transactions.filter((t) => t.date === todayStr);
 
     let todayTransferVol = 0;
@@ -233,7 +303,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
       withdrawVolume: todayWithdrawVol,
       commission: todayCommission,
     };
-  }, [records, transactions, todayStr]);
+  }, [normalizedRecords, transactions, todayStr]);
 
   // Filtered transactions
   const filteredTransactions = useMemo(() => {
@@ -260,7 +330,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
   const adminPeriodStats = useMemo(() => {
     if (isWorker) return null;
 
-    const inRangeRecords = records.filter((r) => {
+    const inRangeRecords = normalizedRecords.filter((r) => {
       if (dailyFilter === "TODAY") return r.date === todayStr;
       if (dailyFilter === "RANGE" || startDate || endDate) {
         if (startDate && r.date < startDate) return false;
@@ -313,7 +383,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
     } else if (endDate) {
       label = `Up to ${endDate}`;
     } else {
-      label = `All History (${records.length} Days Recorded)`;
+      label = `All History (${normalizedRecords.length} Days Recorded)`;
     }
 
     return {
@@ -329,7 +399,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
       txCount: inRangeTxs.length,
     };
   }, [
-    records,
+    normalizedRecords,
     transactions,
     dailyFilter,
     startDate,
@@ -344,17 +414,17 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
   // Filtered daily records (Today vs Range vs All)
   const filteredDailyRecords = useMemo(() => {
     if (dailyFilter === "TODAY") {
-      return records.filter((r) => r.date === todayStr);
+      return normalizedRecords.filter((r) => r.date === todayStr);
     }
     if (dailyFilter === "RANGE" || startDate || endDate) {
-      return records.filter((r) => {
+      return normalizedRecords.filter((r) => {
         if (startDate && r.date < startDate) return false;
         if (endDate && r.date > endDate) return false;
         return true;
       });
     }
-    return records;
-  }, [records, dailyFilter, todayStr, startDate, endDate]);
+    return normalizedRecords;
+  }, [normalizedRecords, dailyFilter, todayStr, startDate, endDate]);
 
   // Paginated records
   const paginatedRecords = useMemo(() => {
@@ -432,7 +502,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
   };
 
   const exportDailyCSV = () => {
-    if (records.length === 0) return;
+    if (normalizedRecords.length === 0) return;
     const headers = [
       "Date",
       "EP App Opening",
@@ -450,7 +520,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
       "Notes",
     ];
 
-    const rows = records.map((r) => [
+    const rows = normalizedRecords.map((r) => [
       r.date,
       r.epOpening,
       r.jcOpening,
@@ -586,12 +656,12 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
               onChange={(e) => setSelectedDate(e.target.value)}
               className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 rounded-md px-2.5 py-1 focus:ring-1 focus:ring-emerald-500"
             >
-              {records.map((r) => (
+              {normalizedRecords.map((r) => (
                 <option key={r.id} value={r.date}>
                   {r.date} {r.date === todayStr ? "(Today)" : ""}
                 </option>
               ))}
-              {!records.some((r) => r.date === todayStr) && (
+              {!normalizedRecords.some((r) => r.date === todayStr) && (
                 <option value={todayStr}>
                   {todayStr} (Today - Not Recorded)
                 </option>
@@ -1835,7 +1905,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
           await onSaveDailyRecord(record);
           onRefresh();
         }}
-        existingDates={records.map((r) => r.date)}
+        existingDates={normalizedRecords.map((r) => r.date)}
       />
 
       {/* Transaction Modal */}

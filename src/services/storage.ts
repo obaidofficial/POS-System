@@ -35,6 +35,7 @@ import {
   ProtectorBrandCompatibility,
 } from '../types';
 import { authService } from './auth';
+import { getBusinessDate, getPakistanTime, getPakistanFormattedTime } from '../utils/businessDate';
 
 const STORAGE_KEYS = {
   ITEMS: 'offline_stock_items_v4',
@@ -1104,7 +1105,9 @@ class StorageService {
       }));
       this.salesCache = rawSales ? JSON.parse(rawSales) : [...INITIAL_SALES];
       this.settingsCache = rawSettings ? { ...DEFAULT_STORE_SETTINGS, ...JSON.parse(rawSettings) } : { ...DEFAULT_STORE_SETTINGS };
-      this.epJcRecordsCache = rawEpJcRecords ? JSON.parse(rawEpJcRecords) : [...INITIAL_EPJC_RECORDS];
+      this.epJcRecordsCache = rawEpJcRecords
+        ? (JSON.parse(rawEpJcRecords) as any[]).map((r) => this.normalizeEpJcRecord(r))
+        : [...INITIAL_EPJC_RECORDS];
       this.epJcTxsCache = rawEpJcTxs ? JSON.parse(rawEpJcTxs) : [...INITIAL_EPJC_TXS];
       this.loadRecordsCache = rawLoadRecords ? JSON.parse(rawLoadRecords) : [...INITIAL_LOAD_RECORDS];
       this.loadTxsCache = rawLoadTxs ? JSON.parse(rawLoadTxs) : [...INITIAL_LOAD_TXS];
@@ -1176,7 +1179,7 @@ class StorageService {
             this.settingsCache = { ...DEFAULT_STORE_SETTINGS, ...json.data.settings };
           }
           if (Array.isArray(json.data.epJcDailyRecords)) {
-            this.epJcRecordsCache = json.data.epJcDailyRecords;
+            this.epJcRecordsCache = json.data.epJcDailyRecords.map((r: any) => this.normalizeEpJcRecord(r));
           }
           if (Array.isArray(json.data.epJcTransactions)) {
             this.epJcTxsCache = json.data.epJcTransactions;
@@ -1571,13 +1574,14 @@ class StorageService {
 
     const settings = this.getStoreSettings();
     const format = settings.printerSettings?.timeFormat || '12h';
-    const time = saleData.time || new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: format !== '24h' });
+    const time = saleData.time || getPakistanFormattedTime(format === '24h' ? '24h' : '12h');
     const userProfileName = authService.getStoredUser()?.name;
     const cashierName = saleData.cashierName || userProfileName || 'Counter Cashier';
 
     // Save Sale Record
     const newSale: Sale = {
       ...saleData,
+      date: saleData.date || getBusinessDate(),
       time,
       cashierName,
       items: normalizedItems,
@@ -2017,23 +2021,39 @@ class StorageService {
 
   // --- EASYPAISA (EP) & JAZZCASH (JC) SERVICES ---
 
-  public getEpJcDailyRecords(): EpJcDailyRecord[] {
-    return [...this.epJcRecordsCache].sort((a, b) => b.date.localeCompare(a.date));
-  }
+  public normalizeEpJcRecord(record: any): EpJcDailyRecord {
+    if (!record) {
+      return {
+        id: `epjc_${Date.now()}`,
+        date: getBusinessDate(),
+        epOpening: 0,
+        jcOpening: 0,
+        epJcCashOpening: 0,
+        extraAddition: 0,
+        customAccounts: [],
+        totalOpening: 0,
+        epClosing: 0,
+        jcClosing: 0,
+        epJcCashClosing: 0,
+        epJcExpense: 0,
+        totalClosing: 0,
+        netDifference: 0,
+        resultType: 'BALANCED',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    }
 
-  public getEpJcDailyRecord(date: string): EpJcDailyRecord | undefined {
-    return this.epJcRecordsCache.find((r) => r.date === date || r.id === date);
-  }
-
-  public async saveEpJcDailyRecord(record: Partial<EpJcDailyRecord> & { date: string }): Promise<EpJcDailyRecord> {
     const epOpening = Number(record.epOpening) || 0;
     const jcOpening = Number(record.jcOpening) || 0;
     const epJcCashOpening =
       record.epJcCashOpening !== undefined
         ? Number(record.epJcCashOpening) || 0
         : (Number(record.epCashOpening) || 0) + (Number(record.jcCashOpening) || 0);
+    const extraAddition = Number(record.extraAddition) || 0;
+
     const customAccounts: EpJcCustomAccount[] = Array.isArray(record.customAccounts)
-      ? record.customAccounts.map((ca, idx) => ({
+      ? record.customAccounts.map((ca: any, idx: number) => ({
           id: ca.id || `ca_${idx}_${Date.now()}`,
           name: (ca.name || '').trim() || `Account ${idx + 1}`,
           openingBalance: Number(ca.openingBalance) || 0,
@@ -2044,7 +2064,6 @@ class StorageService {
     const customOpening = customAccounts.reduce((sum, ca) => sum + ca.openingBalance, 0);
     const customClosing = customAccounts.reduce((sum, ca) => sum + ca.closingBalance, 0);
 
-    const extraAddition = Number(record.extraAddition) || 0;
     const totalOpening = epOpening + jcOpening + epJcCashOpening + extraAddition + customOpening;
 
     const epClosing = Number(record.epClosing) || 0;
@@ -2060,62 +2079,53 @@ class StorageService {
     const resultType: 'PROFIT' | 'LOSS' | 'BALANCED' = 
       netDifference > 0 ? 'PROFIT' : netDifference < 0 ? 'LOSS' : 'BALANCED';
 
-    const now = new Date().toISOString();
-    const existingIndex = this.epJcRecordsCache.findIndex((r) => r.date === record.date || r.id === record.id);
+    return {
+      ...record,
+      id: record.id || `epjc_${record.date}`,
+      date: record.date,
+      epOpening,
+      jcOpening,
+      epJcCashOpening,
+      epCashOpening: record.epCashOpening !== undefined ? Number(record.epCashOpening) : epJcCashOpening,
+      jcCashOpening: record.jcCashOpening !== undefined ? Number(record.jcCashOpening) : 0,
+      extraAddition,
+      customAccounts,
+      totalOpening,
+      epClosing,
+      jcClosing,
+      epJcCashClosing,
+      epCashClosing: record.epCashClosing !== undefined ? Number(record.epCashClosing) : epJcCashClosing,
+      jcCashClosing: record.jcCashClosing !== undefined ? Number(record.jcCashClosing) : 0,
+      epJcExpense,
+      totalClosing,
+      netDifference,
+      resultType,
+      notes: record.notes || '',
+      createdAt: record.createdAt || new Date().toISOString(),
+      updatedAt: record.updatedAt || new Date().toISOString(),
+    };
+  }
 
-    let processedRecord: EpJcDailyRecord;
+  public getEpJcDailyRecords(): EpJcDailyRecord[] {
+    return [...this.epJcRecordsCache].map((r) => this.normalizeEpJcRecord(r)).sort((a, b) => b.date.localeCompare(a.date));
+  }
+
+  public getEpJcDailyRecord(date: string): EpJcDailyRecord | undefined {
+    const found = this.epJcRecordsCache.find((r) => r.date === date || r.id === date);
+    return found ? this.normalizeEpJcRecord(found) : undefined;
+  }
+
+  public async saveEpJcDailyRecord(record: Partial<EpJcDailyRecord> & { date: string }): Promise<EpJcDailyRecord> {
+    const processedRecord = this.normalizeEpJcRecord({
+      ...record,
+      updatedAt: new Date().toISOString(),
+      createdAt: record.createdAt || new Date().toISOString(),
+    });
+
+    const existingIndex = this.epJcRecordsCache.findIndex((r) => r.date === record.date || r.id === processedRecord.id);
     if (existingIndex >= 0) {
-      const existing = this.epJcRecordsCache[existingIndex];
-      processedRecord = {
-        ...existing,
-        ...record,
-        id: existing.id,
-        date: record.date,
-        epOpening,
-        jcOpening,
-        epJcCashOpening,
-        epCashOpening: record.epCashOpening !== undefined ? Number(record.epCashOpening) : epJcCashOpening,
-        jcCashOpening: record.jcCashOpening !== undefined ? Number(record.jcCashOpening) : 0,
-        extraAddition,
-        customAccounts,
-        totalOpening,
-        epClosing,
-        jcClosing,
-        epJcCashClosing,
-        epCashClosing: record.epCashClosing !== undefined ? Number(record.epCashClosing) : epJcCashClosing,
-        jcCashClosing: record.jcCashClosing !== undefined ? Number(record.jcCashClosing) : 0,
-        epJcExpense,
-        totalClosing,
-        netDifference,
-        resultType,
-        updatedAt: now,
-      };
       this.epJcRecordsCache[existingIndex] = processedRecord;
     } else {
-      processedRecord = {
-        id: record.id || `epjc_${record.date}`,
-        date: record.date,
-        epOpening,
-        jcOpening,
-        epJcCashOpening,
-        epCashOpening: record.epCashOpening !== undefined ? Number(record.epCashOpening) : epJcCashOpening,
-        jcCashOpening: record.jcCashOpening !== undefined ? Number(record.jcCashOpening) : 0,
-        extraAddition,
-        customAccounts,
-        totalOpening,
-        epClosing,
-        jcClosing,
-        epJcCashClosing,
-        epCashClosing: record.epCashClosing !== undefined ? Number(record.epCashClosing) : epJcCashClosing,
-        jcCashClosing: record.jcCashClosing !== undefined ? Number(record.jcCashClosing) : 0,
-        epJcExpense,
-        totalClosing,
-        netDifference,
-        resultType,
-        notes: record.notes || '',
-        createdAt: record.createdAt || now,
-        updatedAt: now,
-      };
       this.epJcRecordsCache.unshift(processedRecord);
     }
 
@@ -2123,11 +2133,22 @@ class StorageService {
     await this.persistToPcDisk();
 
     try {
-      await fetch('/api/ep-jc/daily', {
+      const res = await fetch('/api/ep-jc/daily', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(processedRecord),
       });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.record) {
+          const idx = this.epJcRecordsCache.findIndex((r) => r.id === json.record.id || r.date === json.record.date);
+          if (idx >= 0) {
+            this.epJcRecordsCache[idx] = this.normalizeEpJcRecord(json.record);
+            this.saveToLocalCache();
+            this.notify();
+          }
+        }
+      }
     } catch (e) {
       console.warn('Could not sync EP JC record to server', e);
     }
@@ -2167,6 +2188,8 @@ class StorageService {
     const processedTx: EpJcTransaction = {
       ...tx,
       id: tx.id || `epjc_tx_${Date.now()}`,
+      date: tx.date || getBusinessDate(),
+      time: tx.time || getPakistanFormattedTime('24h'),
       amount: Number(tx.amount) || 0,
       feeOrCommission: Number(tx.feeOrCommission) || 0,
       createdAt: now,
@@ -2351,6 +2374,8 @@ class StorageService {
     const processedTx: LoadTransaction = {
       ...tx,
       id: tx.id || `load_tx_${Date.now()}`,
+      date: tx.date || getBusinessDate(),
+      time: tx.time || getPakistanFormattedTime('24h'),
       amount: Number(tx.amount) || 0,
       commissionOrProfit: Number(tx.commissionOrProfit) || 0,
       createdAt: now,

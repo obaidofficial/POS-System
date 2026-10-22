@@ -101,13 +101,21 @@ export const Sales: React.FC<SalesProps> = ({
 
   useEffect(() => {
     const updateBusinessDate = () => {
-      setTodayStr(getBusinessDate());
+      const current = getBusinessDate();
+      setTodayStr((prev) => {
+        if (prev !== current) {
+          setFromDate(current);
+          setToDate(current);
+          return current;
+        }
+        return prev;
+      });
     };
 
     updateBusinessDate();
 
-    // Check the business date every 30 seconds
-    const interval = window.setInterval(updateBusinessDate, 30_000);
+    // Check the business date every 10 seconds
+    const interval = window.setInterval(updateBusinessDate, 10_000);
 
     return () => window.clearInterval(interval);
   }, []);
@@ -271,7 +279,7 @@ export const Sales: React.FC<SalesProps> = ({
     [sales, todayStr],
   );
   const previousSales = useMemo(
-    () => sales.filter((s) => s.date < todayStr),
+    () => sales.filter((s) => s.date !== todayStr),
     [sales, todayStr],
   );
 

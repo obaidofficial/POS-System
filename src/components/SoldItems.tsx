@@ -26,6 +26,7 @@ import {
 } from 'lucide-react';
 import { Sale, InventoryItem, StoreSettings, AuthUser } from '../types';
 import { formatPKR } from '../utils/currency';
+import { getBusinessDate, getDateNDaysAgoBusiness } from '../utils/businessDate';
 import { TablePagination } from './TablePagination';
 import { getStoredPageSize, setStoredPageSize } from '../utils/pagination';
 
@@ -101,11 +102,9 @@ export interface BrandSoldBreakdown {
   items: SoldItemAggregated[];
 }
 
-// Helper to format date offset
+// Helper to format date offset based on Pakistan business date
 function formatDateOffset(daysAgo: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() - daysAgo);
-  return d.toISOString().split('T')[0];
+  return getDateNDaysAgoBusiness(daysAgo);
 }
 
 export const SoldItems: React.FC<SoldItemsProps> = ({
@@ -116,7 +115,7 @@ export const SoldItems: React.FC<SoldItemsProps> = ({
   currentUser,
   onQuickNewSale,
 }) => {
-  const todayStr = useMemo(() => new Date().toISOString().split('T')[0], []);
+  const todayStr = useMemo(() => getBusinessDate(), []);
   const yesterdayStr = useMemo(() => formatDateOffset(1), []);
 
   // Filter States

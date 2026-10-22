@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { LoadTransaction, LoadNetworkType, LoadTxType } from '../types';
 import { formatPKR } from '../utils/currency';
+import { getBusinessDate, getPakistanTime } from '../utils/businessDate';
 
 interface LoadTxModalProps {
   isOpen: boolean;
@@ -76,8 +77,8 @@ export const LoadTxModal: React.FC<LoadTxModalProps> = ({
   onSave,
   defaultDate,
 }) => {
-  const todayStr = new Date().toISOString().split('T')[0];
-  const nowTimeStr = new Date().toTimeString().substring(0, 5);
+  const todayStr = defaultDate || getBusinessDate();
+  const nowTimeStr = getPakistanTime();
 
   const [date, setDate] = useState<string>(todayStr);
   const [time, setTime] = useState<string>(nowTimeStr);

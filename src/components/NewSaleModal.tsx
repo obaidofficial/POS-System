@@ -24,6 +24,7 @@ import { formatPKR } from '../utils/currency';
 import { BarcodeScannerWidget } from './BarcodeScannerWidget';
 import { soundController } from '../utils/audio';
 import { authService } from '../services/auth';
+import { getBusinessDate, getPakistanFormattedTime } from '../utils/businessDate';
 
 interface NewSaleModalProps {
   isOpen: boolean;
@@ -41,7 +42,7 @@ export const NewSaleModal: React.FC<NewSaleModalProps> = ({
   const [selectedLines, setSelectedLines] = useState<SaleItemLine[]>([]);
   const [customerName, setCustomerName] = useState('Walk in Customer');
   const [invoiceNumber, setInvoiceNumber] = useState('');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(() => getBusinessDate());
   const [notes, setNotes] = useState('');
   const [error, setError] = useState('');
   const [autoPrintSlip, setAutoPrintSlip] = useState<boolean>(() => storage.isAutoPrintSlipEnabled());
@@ -51,7 +52,7 @@ export const NewSaleModal: React.FC<NewSaleModalProps> = ({
   });
   const [saleTime, setSaleTime] = useState<string>(() => {
     const is24h = storage.getStoreSettings().printerSettings?.timeFormat === '24h';
-    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: !is24h });
+    return getPakistanFormattedTime(is24h ? '24h' : '12h');
   });
 
   const storeSettings = useMemo(() => storage.getStoreSettings(), [isOpen]);
@@ -76,7 +77,7 @@ export const NewSaleModal: React.FC<NewSaleModalProps> = ({
       setCustomerName('Walk in Customer');
       setNotes('');
       setError('');
-      setDate(new Date().toISOString().split('T')[0]);
+      setDate(getBusinessDate());
       setSearchQuery('');
       setLastScannedCode('');
       setLastScannedStatus(null);
@@ -85,7 +86,7 @@ export const NewSaleModal: React.FC<NewSaleModalProps> = ({
       const is24h = currentSettings.printerSettings?.timeFormat === '24h';
       const userProfileName = authService.getStoredUser()?.name || 'Obaid';
       setCashierName(userProfileName);
-      setSaleTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: !is24h }));
+      setSaleTime(getPakistanFormattedTime(is24h ? '24h' : '12h'));
       const prefix = currentSettings.printerSettings?.invoicePrefix || 'INV-';
       const randomInvSuffix = Math.floor(10000 + Math.random() * 90000);
       setInvoiceNumber(`${prefix}${randomInvSuffix}`);

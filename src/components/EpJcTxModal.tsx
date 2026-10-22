@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { EpJcTransaction, EpJcServiceType, EpJcTxType } from '../types';
 import { formatPKR } from '../utils/currency';
+import { getBusinessDate, getPakistanTime } from '../utils/businessDate';
 
 interface EpJcTxModalProps {
   isOpen: boolean;
@@ -31,9 +32,8 @@ export const EpJcTxModal: React.FC<EpJcTxModalProps> = ({
   onSave,
   defaultDate,
 }) => {
-  const now = new Date();
-  const todayStr = defaultDate || now.toISOString().split('T')[0];
-  const currentTimeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  const todayStr = defaultDate || getBusinessDate();
+  const currentTimeStr = getPakistanTime();
 
   const [service, setService] = useState<EpJcServiceType>('EASYPAISA');
   const [type, setType] = useState<EpJcTxType>('TRANSFER');

@@ -3,6 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { createServer as createViteServer } from 'vite';
+import { getBusinessDate } from './src/utils/businessDate';
 
 const PORT = 3000;
 const DB_DIR = path.join(process.cwd(), 'data');
@@ -1181,6 +1182,76 @@ const DEFAULT_INITIAL_DATA: DatabaseSchema = {
   ],
 };
 
+function calculateEpJcTotals(record: any): any {
+  if (!record) return record;
+
+  const epOpening = Number(record.epOpening) || 0;
+  const jcOpening = Number(record.jcOpening) || 0;
+  const epJcCashOpening =
+    record.epJcCashOpening !== undefined
+      ? Number(record.epJcCashOpening) || 0
+      : (Number(record.epCashOpening) || 0) + (Number(record.jcCashOpening) || 0);
+  const extraAddition = Number(record.extraAddition) || 0;
+
+  const customAccounts = Array.isArray(record.customAccounts)
+    ? record.customAccounts.map((ca: any, idx: number) => ({
+        id: ca.id || `ca_${idx}_${Date.now()}`,
+        name: (ca.name || '').trim() || `Account ${idx + 1}`,
+        openingBalance: Number(ca.openingBalance) || 0,
+        closingBalance: Number(ca.closingBalance) || 0,
+      }))
+    : [];
+
+  const customOpening = customAccounts.reduce(
+    (sum: number, ca: any) => sum + (Number(ca.openingBalance) || 0),
+    0
+  );
+  const customClosing = customAccounts.reduce(
+    (sum: number, ca: any) => sum + (Number(ca.closingBalance) || 0),
+    0
+  );
+
+  const totalOpening = epOpening + jcOpening + epJcCashOpening + extraAddition + customOpening;
+
+  const epClosing = Number(record.epClosing) || 0;
+  const jcClosing = Number(record.jcClosing) || 0;
+  const epJcCashClosing =
+    record.epJcCashClosing !== undefined
+      ? Number(record.epJcCashClosing) || 0
+      : (Number(record.epCashClosing) || 0) + (Number(record.jcCashClosing) || 0);
+  const epJcExpense = Number(record.epJcExpense) || 0;
+  const totalClosing = epClosing + jcClosing + epJcCashClosing + epJcExpense + customClosing;
+
+  const netDifference = totalClosing - totalOpening;
+  const resultType: 'PROFIT' | 'LOSS' | 'BALANCED' =
+    netDifference > 0 ? 'PROFIT' : netDifference < 0 ? 'LOSS' : 'BALANCED';
+
+  return {
+    ...record,
+    id: record.id || `epjc_${record.date}`,
+    date: record.date,
+    epOpening,
+    jcOpening,
+    epJcCashOpening,
+    epCashOpening: record.epCashOpening !== undefined ? Number(record.epCashOpening) : epJcCashOpening,
+    jcCashOpening: record.jcCashOpening !== undefined ? Number(record.jcCashOpening) : 0,
+    extraAddition,
+    customAccounts,
+    totalOpening,
+    epClosing,
+    jcClosing,
+    epJcCashClosing,
+    epCashClosing: record.epCashClosing !== undefined ? Number(record.epCashClosing) : epJcCashClosing,
+    jcCashClosing: record.jcCashClosing !== undefined ? Number(record.jcCashClosing) : 0,
+    epJcExpense,
+    totalClosing,
+    netDifference,
+    resultType,
+    updatedAt: record.updatedAt || new Date().toISOString(),
+    createdAt: record.createdAt || new Date().toISOString(),
+  };
+}
+
 function ensureDbFile(): DatabaseSchema {
   if (!fs.existsSync(DB_DIR)) {
     fs.mkdirSync(DB_DIR, { recursive: true });
@@ -1202,6 +1273,24 @@ function ensureDbFile(): DatabaseSchema {
     if (!Array.isArray(parsed.epJcDailyRecords)) {
       parsed.epJcDailyRecords = DEFAULT_INITIAL_DATA.epJcDailyRecords || [];
       modified = true;
+    } else {
+      let epJcRepaired = false;
+      parsed.epJcDailyRecords = parsed.epJcDailyRecords.map((r: any) => {
+        const recalculated = calculateEpJcTotals(r);
+        if (
+          recalculated.totalOpening !== r.totalOpening ||
+          recalculated.totalClosing !== r.totalClosing ||
+          recalculated.netDifference !== r.netDifference ||
+          recalculated.resultType !== r.resultType
+        ) {
+          epJcRepaired = true;
+          return recalculated;
+        }
+        return r;
+      });
+      if (epJcRepaired) {
+        modified = true;
+      }
     }
     if (!Array.isArray(parsed.epJcTransactions)) {
       parsed.epJcTransactions = DEFAULT_INITIAL_DATA.epJcTransactions || [];
@@ -1921,7 +2010,7 @@ async function startServer() {
         bankTransactions: bankTransactions !== undefined ? bankTransactions : current.bankTransactions,
         sales: sales !== undefined ? sales : current.sales,
         settings: settings !== undefined ? settings : (current.settings || DEFAULT_STORE_SETTINGS),
-        epJcDailyRecords: epJcDailyRecords !== undefined ? epJcDailyRecords : (current.epJcDailyRecords || []),
+        epJcDailyRecords: epJcDailyRecords !== undefined ? epJcDailyRecords.map(calculateEpJcTotals) : (current.epJcDailyRecords || []),
         epJcTransactions: epJcTransactions !== undefined ? epJcTransactions : (current.epJcTransactions || []),
         loadDailyRecords: loadDailyRecords !== undefined ? loadDailyRecords : (current.loadDailyRecords || []),
         loadTransactions: loadTransactions !== undefined ? loadTransactions : (current.loadTransactions || []),
@@ -1953,7 +2042,7 @@ async function startServer() {
       const data = ensureDbFile();
       res.json({
         success: true,
-        dailyRecords: data.epJcDailyRecords || [],
+        dailyRecords: (data.epJcDailyRecords || []).map(calculateEpJcTotals),
         transactions: data.epJcTransactions || [],
       });
     } catch (err: any) {
@@ -1971,50 +2060,10 @@ async function startServer() {
       const current = ensureDbFile();
       const records = current.epJcDailyRecords || [];
 
-      // Calculate totals
-      const epOpening = Number(record.epOpening) || 0;
-      const jcOpening = Number(record.jcOpening) || 0;
-      const epJcCashOpening =
-        record.epJcCashOpening !== undefined
-          ? Number(record.epJcCashOpening) || 0
-          : (Number(record.epCashOpening) || 0) + (Number(record.jcCashOpening) || 0);
-      const extraAddition = Number(record.extraAddition) || 0;
-      const totalOpening = epOpening + jcOpening + epJcCashOpening + extraAddition;
-
-      const epClosing = Number(record.epClosing) || 0;
-      const jcClosing = Number(record.jcClosing) || 0;
-      const epJcCashClosing =
-        record.epJcCashClosing !== undefined
-          ? Number(record.epJcCashClosing) || 0
-          : (Number(record.epCashClosing) || 0) + (Number(record.jcCashClosing) || 0);
-      const epJcExpense = Number(record.epJcExpense) || 0;
-      const totalClosing = epClosing + jcClosing + epJcCashClosing + epJcExpense;
-
-      const netDifference = totalClosing - totalOpening;
-      const resultType = netDifference > 0 ? 'PROFIT' : netDifference < 0 ? 'LOSS' : 'BALANCED';
-
-      const processedRecord = {
+      const processedRecord = calculateEpJcTotals({
         ...record,
-        id: record.id || `epjc_${record.date}`,
-        epOpening,
-        jcOpening,
-        epJcCashOpening,
-        epCashOpening: record.epCashOpening !== undefined ? Number(record.epCashOpening) : epJcCashOpening,
-        jcCashOpening: record.jcCashOpening !== undefined ? Number(record.jcCashOpening) : 0,
-        extraAddition,
-        totalOpening,
-        epClosing,
-        jcClosing,
-        epJcCashClosing,
-        epCashClosing: record.epCashClosing !== undefined ? Number(record.epCashClosing) : epJcCashClosing,
-        jcCashClosing: record.jcCashClosing !== undefined ? Number(record.jcCashClosing) : 0,
-        epJcExpense,
-        totalClosing,
-        netDifference,
-        resultType,
         updatedAt: new Date().toISOString(),
-        createdAt: record.createdAt || new Date().toISOString(),
-      };
+      });
 
       const existingIndex = records.findIndex((r: any) => r.date === record.date || r.id === processedRecord.id);
       if (existingIndex >= 0) {
@@ -2030,7 +2079,7 @@ async function startServer() {
       res.json({
         success: true,
         record: processedRecord,
-        message: `EP & JC record for ${record.date} saved successfully. Result: ${resultType} (Rs. ${Math.abs(netDifference).toLocaleString()})`,
+        message: `EP & JC record for ${record.date} saved successfully. Result: ${processedRecord.resultType} (Rs. ${Math.abs(processedRecord.netDifference).toLocaleString()})`,
       });
     } catch (err: any) {
       res.status(500).json({ success: false, error: err.message });
@@ -2062,6 +2111,7 @@ async function startServer() {
       const processedTx = {
         ...tx,
         id: tx.id || `epjc_tx_${Date.now()}`,
+        date: tx.date || getBusinessDate(),
         amount: Number(tx.amount) || 0,
         feeOrCommission: Number(tx.feeOrCommission) || 0,
         createdAt: tx.createdAt || new Date().toISOString(),
@@ -2210,6 +2260,7 @@ async function startServer() {
       const processedTx = {
         ...tx,
         id: tx.id || `load_tx_${Date.now()}`,
+        date: tx.date || getBusinessDate(),
         amount: Number(tx.amount) || 0,
         commissionOrProfit: Number(tx.commissionOrProfit) || 0,
         createdAt: tx.createdAt || new Date().toISOString(),

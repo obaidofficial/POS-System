@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { EpJcDailyRecord, EpJcCustomAccount } from "../types";
 import { formatPKR } from "../utils/currency";
+import { getBusinessDate } from "../utils/businessDate";
 
 export interface FormCustomAccount {
   id: string;
@@ -43,7 +44,7 @@ export const EpJcDailyModal: React.FC<EpJcDailyModalProps> = ({
   onSave,
   existingDates,
 }) => {
-  const todayStr = new Date().toISOString().split("T")[0];
+  const todayStr = getBusinessDate();
 
   const [date, setDate] = useState<string>(todayStr);
   const [epOpening, setEpOpening] = useState<string>("0");

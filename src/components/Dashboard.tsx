@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import {
   Package,
   AlertTriangle,
@@ -34,6 +34,7 @@ import {
 } from "../types";
 import { ActiveTab } from "./Navbar";
 import { formatPKR, formatNumber } from "../utils/currency";
+import { getBusinessDate, formatBusinessDateForDisplay } from "../utils/businessDate";
 import { FinancialPeriodBreakdown } from "./FinancialPeriodBreakdown";
 import { MonthlyFinancialReports } from "./MonthlyFinancialReports";
 
@@ -268,13 +269,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
     }));
   };
 
-  // Present Date (Today) calculations for quick KPI tags
-  const todayStr = useMemo(() => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
+  // Present Date (Today) calculations for quick KPI tags (Pakistan Business Date 6 AM cutoff)
+  const [todayStr, setTodayStr] = useState<string>(() => getBusinessDate());
+
+  useEffect(() => {
+    const checkDate = () => {
+      const current = getBusinessDate();
+      setTodayStr((prev) => (prev !== current ? current : prev));
+    };
+    const interval = setInterval(checkDate, 15000);
+    return () => clearInterval(interval);
   }, []);
 
   const todayCash = useMemo(
@@ -305,13 +309,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
           <h1 className="text-2xl font-bold text-black tracking-tight">
             Dashboard Overview
           </h1>
-          <p className="text-base text-black flex items-center float-right">
-            {new Date().toLocaleDateString("en-US", {
-              weekday: "long",
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })}
+          <p className="text-base text-black flex items-center float-right font-medium">
+            {formatBusinessDateForDisplay(todayStr)}
           </p>
         </div>
       </div>

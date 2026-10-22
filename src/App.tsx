@@ -24,6 +24,7 @@ import { CashBook } from "./components/CashBook";
 import { SoldItems } from "./components/SoldItems";
 import { storage } from "./services/storage";
 import { authService } from "./services/auth";
+import { getBusinessDate } from "./utils/businessDate";
 import {
   InventoryItem,
   DashboardMetrics,
@@ -329,12 +330,15 @@ export default function App() {
   };
 
   const isWorker = currentUser?.role === "worker";
-  const todayStr = useMemo(() => {
-    const now = new Date();
-    const y = now.getFullYear();
-    const m = String(now.getMonth() + 1).padStart(2, "0");
-    const d = String(now.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
+  const [todayStr, setTodayStr] = useState<string>(() => getBusinessDate());
+
+  useEffect(() => {
+    const checkBusinessDate = () => {
+      const current = getBusinessDate();
+      setTodayStr((prev) => (prev !== current ? current : prev));
+    };
+    const interval = setInterval(checkBusinessDate, 15000);
+    return () => clearInterval(interval);
   }, []);
 
   const todaySalesCount = useMemo(

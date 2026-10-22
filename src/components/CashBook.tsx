@@ -40,6 +40,7 @@ import {
   StoreSettings,
 } from "../types";
 import { formatPKR } from "../utils/currency";
+import { getBusinessDate, getPakistanTime } from "../utils/businessDate";
 import { TablePagination } from "./TablePagination";
 import {
   getStoredPageSize,
@@ -191,13 +192,8 @@ export const CashBook: React.FC<CashBookProps> = ({
 
   // New Transaction Form state
   const [txAmount, setTxAmount] = useState<number | "">("");
-  const [txDate, setTxDate] = useState<string>(
-    () => new Date().toISOString().split("T")[0],
-  );
-  const [txTime, setTxTime] = useState<string>(() => {
-    const d = new Date();
-    return `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`;
-  });
+  const [txDate, setTxDate] = useState<string>(() => getBusinessDate());
+  const [txTime, setTxTime] = useState<string>(() => getPakistanTime());
   const [txPaymentMethod, setTxPaymentMethod] =
     useState<CashBookPaymentMethod>("CASH");
   const [txDescription, setTxDescription] = useState("");
@@ -356,11 +352,8 @@ export const CashBook: React.FC<CashBookProps> = ({
     setTxFormError("");
     setTxModalMode(mode);
     setTxAmount("");
-    setTxDate(new Date().toISOString().split("T")[0]);
-    const d = new Date();
-    setTxTime(
-      `${String(d.getHours()).padStart(2, "0")}:${String(d.getMinutes()).padStart(2, "0")}`,
-    );
+    setTxDate(getBusinessDate());
+    setTxTime(getPakistanTime());
     setTxPaymentMethod("CASH");
     setTxDescription("");
     setTxReference("");
@@ -446,8 +439,8 @@ export const CashBook: React.FC<CashBookProps> = ({
           partyType: createdAcc.partyType,
           type: "BORROWED",
           amount: initialAmt,
-          date: new Date().toISOString().split("T")[0],
-          time: new Date().toTimeString().substring(0, 5),
+          date: getBusinessDate(),
+          time: getPakistanTime(),
           paymentMethod: "CASH",
           description:
             newAccPartyType === "CUSTOMER"
