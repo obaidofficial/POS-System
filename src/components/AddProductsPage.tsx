@@ -731,29 +731,29 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
       {/* ========================================================= */}
       {/* 1. TOP HEADER & NAVIGATION                                */}
       {/* ========================================================= */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-slate-200/80 pb-4 sm:pb-5">
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={onBack}
-            className="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-colors shadow-2xs cursor-pointer flex items-center justify-center"
+            className="p-2 sm:p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-colors shadow-2xs cursor-pointer flex items-center justify-center shrink-0"
             title="Back to Inventory"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
               <span>Add Products to Inventory</span>
             </h1>
           </div>
         </div>
 
         {/* Top Action Controls */}
-        <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
+        <div className="flex items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
           <button
             type="button"
             onClick={onBack}
-            className="px-4 py-2.5 rounded-md border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-colors cursor-pointer"
+            className="flex-1 sm:flex-initial text-center px-4 py-2.5 rounded-md border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -763,10 +763,10 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
             id="btn-save-all-products-top"
             onClick={handleSaveAll}
             disabled={isSubmitting || summary.totalProducts === 0}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs hover:shadow-sm active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-2 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-md bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs hover:shadow-sm active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <Save className="w-4 h-4 text-emerald-400" />
-            <span>
+            <Save className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span className="truncate">
               {isSubmitting
                 ? "Saving..."
                 : `Save ${summary.totalProducts > 0 ? `(${summary.totalProducts})` : ""} Products`}
@@ -777,7 +777,7 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
 
       {/* Success Notification Banner */}
       {categorySuccessToast && (
-        <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold flex items-center justify-between shadow-2xs animate-fadeIn">
+        <div className="p-3 sm:p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-bold flex items-center justify-between shadow-2xs animate-fadeIn">
           <div className="flex items-center gap-2">
             <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
             <span>{categorySuccessToast}</span>
@@ -794,7 +794,7 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
 
       {/* Form Error Banner */}
       {formError && (
-        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center justify-between shadow-2xs">
+        <div className="p-3.5 sm:p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center justify-between shadow-2xs">
           <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{formError}</span>
@@ -812,70 +812,70 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
       {/* ========================================================= */}
       {/* 2. REAL-TIME SUMMARY KPI CARDS                            */}
       {/* ========================================================= */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         {/* Card 1: Total SKUs ready */}
-        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+        <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+          <div className="min-w-0 pr-1">
+            <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block truncate">
               Products to Add
             </span>
-            <div className="text-2xl font-black font-mono text-slate-900 mt-1">
+            <div className="text-lg sm:text-2xl font-black font-mono text-slate-900 mt-0.5 sm:mt-1 truncate">
               {summary.totalProducts}{" "}
               <span className="text-xs text-slate-400 font-sans font-normal">
-                / {summary.totalRows} rows
+                / {summary.totalRows}
               </span>
             </div>
           </div>
-          <span className="p-2.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <Package className="w-5 h-5" />
+          <span className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+            <Package className="w-4 h-4 sm:w-5 sm:h-5" />
           </span>
         </div>
 
         {/* Card 2: Total Units */}
-        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+        <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+          <div className="min-w-0 pr-1">
+            <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block truncate">
               Total Stock Units
             </span>
-            <div className="text-2xl font-black font-mono text-slate-900 mt-1">
+            <div className="text-lg sm:text-2xl font-black font-mono text-slate-900 mt-0.5 sm:mt-1 truncate">
               {summary.totalStockUnits}{" "}
               <span className="text-xs text-slate-400 font-sans font-normal">
                 units
               </span>
             </div>
           </div>
-          <span className="p-2.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200">
-            <Layers className="w-5 h-5" />
+          <span className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
+            <Layers className="w-4 h-4 sm:w-5 sm:h-5" />
           </span>
         </div>
 
         {/* Card 3: Total Stock Cost */}
-        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+        <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+          <div className="min-w-0 pr-1">
+            <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block truncate">
               Total Stock Cost
             </span>
-            <div className="text-2xl font-black font-mono text-slate-900 mt-1">
+            <div className="text-lg sm:text-2xl font-black font-mono text-slate-900 mt-0.5 sm:mt-1 truncate">
               {formatPKR(summary.totalCostValue)}
             </div>
           </div>
-          <span className="p-2.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200">
-            <DollarSign className="w-5 h-5" />
+          <span className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
+            <DollarSign className="w-4 h-4 sm:w-5 sm:h-5" />
           </span>
         </div>
 
         {/* Card 4: Estimated Retail Value & Margin */}
-        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
-          <div>
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+        <div className="p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+          <div className="min-w-0 pr-1">
+            <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block truncate">
               Estimated Retail Value
             </span>
-            <div className="text-2xl font-black font-mono text-emerald-600 mt-1">
+            <div className="text-lg sm:text-2xl font-black font-mono text-emerald-600 mt-0.5 sm:mt-1 truncate">
               {formatPKR(summary.totalRetailValue)}
             </div>
           </div>
-          <span className="p-2.5 rounded-xl bg-purple-50 text-purple-700 border border-purple-200">
-            <Sparkles className="w-5 h-5" />
+          <span className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-purple-50 text-purple-700 border border-purple-200 shrink-0">
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
           </span>
         </div>
       </div>
@@ -883,13 +883,13 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
       {/* ========================================================= */}
       {/* 3. BATCH TOOLBAR / HELPERS & CUSTOM CATEGORY ACTION       */}
       {/* ========================================================= */}
-      <div className="p-3 sm:p-4 bg-slate-50 border border-slate-200 rounded-2xl flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="p-3 sm:p-4 bg-slate-50 border border-slate-200 rounded-xl sm:rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
         {/* Left: Quick Category & Brand Apply with Add Custom buttons */}
-        <div className="flex items-center gap-2.5 flex-wrap">
+        <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
           {/* Quick Category */}
-          <div className="flex items-center gap-2">
-            <Tag className="w-4 h-4 text-emerald-600" />
-            <span className="font-bold text-slate-700">Quick Category:</span>
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap sm:flex-nowrap">
+            <Tag className="w-4 h-4 text-emerald-600 shrink-0" />
+            <span className="font-bold text-slate-700 whitespace-nowrap">Category:</span>
             <select
               value={batchCategory}
               onChange={(e) => {
@@ -902,7 +902,7 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
                   handleApplyBatchCategory(e.target.value);
                 }
               }}
-              className="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white font-medium text-slate-800 focus:outline-hidden text-xs cursor-pointer shadow-2xs"
+              className="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white font-medium text-slate-800 focus:outline-hidden text-xs cursor-pointer shadow-2xs max-w-[180px] sm:max-w-none truncate"
             >
               <option value="">
                 {availableCategories.length === 0
@@ -943,16 +943,16 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
           <button
             type="button"
             onClick={() => setIsCategoryModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-2xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-2xs transition-colors cursor-pointer shrink-0"
           >
             <FolderPlus className="w-3.5 h-3.5" />
-            <span>+ Add Category</span>
+            <span>+ Category</span>
           </button>
 
           {/* Quick Brand Apply */}
-          <div className="flex items-center gap-2 ml-1">
-            <Sparkles className="w-4 h-4 text-indigo-600" />
-            <span className="font-bold text-slate-700">Quick Brand:</span>
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap sm:flex-nowrap">
+            <Sparkles className="w-4 h-4 text-indigo-600 shrink-0" />
+            <span className="font-bold text-slate-700 whitespace-nowrap">Brand:</span>
             <select
               value={batchBrand}
               onChange={(e) => {
@@ -965,7 +965,7 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
                   handleApplyBatchBrand(e.target.value);
                 }
               }}
-              className="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white font-medium text-slate-800 focus:outline-hidden text-xs cursor-pointer shadow-2xs"
+              className="px-2.5 py-1.5 rounded-lg border border-slate-300 bg-white font-medium text-slate-800 focus:outline-hidden text-xs cursor-pointer shadow-2xs max-w-[180px] sm:max-w-none truncate"
             >
               <option value="">
                 {availableBrands.length === 0
@@ -1006,17 +1006,17 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
           <button
             type="button"
             onClick={() => setIsBrandModalOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-2xs transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-2xs transition-colors cursor-pointer shrink-0"
           >
             <FolderPlus className="w-3.5 h-3.5" />
-            <span>+ Add Brand</span>
+            <span>+ Brand</span>
           </button>
 
           {availableCategories.length > 0 && (
             <button
               type="button"
               onClick={handleClearAllCategories}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-rose-200 bg-white hover:bg-rose-50 text-rose-700 font-semibold text-xs transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-rose-200 bg-white hover:bg-rose-50 text-rose-700 font-semibold text-xs transition-colors cursor-pointer shrink-0"
               title="Erase all existing categories so you can add your own"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -1028,7 +1028,7 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
             <button
               type="button"
               onClick={handleClearAllBrands}
-              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-rose-200 bg-white hover:bg-rose-50 text-rose-700 font-semibold text-xs transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-rose-200 bg-white hover:bg-rose-50 text-rose-700 font-semibold text-xs transition-colors cursor-pointer shrink-0"
               title="Erase all existing brands so you can add your own"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -1038,18 +1038,18 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
         </div>
 
         {/* Right: Quick Batch Row Adders */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap shrink-0">
           <button
             type="button"
             onClick={() => handleAddMultipleRows(5)}
-            className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 font-bold text-slate-700 text-xs transition-colors cursor-pointer shadow-2xs"
+            className="flex-1 sm:flex-initial text-center px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 font-bold text-slate-700 text-xs transition-colors cursor-pointer shadow-2xs"
           >
             + Add 5 Rows
           </button>
           <button
             type="button"
             onClick={handleClearEmptyRows}
-            className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 font-bold text-slate-600 text-xs transition-colors cursor-pointer shadow-2xs"
+            className="flex-1 sm:flex-initial text-center px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-100 font-bold text-slate-600 text-xs transition-colors cursor-pointer shadow-2xs"
           >
             Clear Empty Rows
           </button>
@@ -1059,9 +1059,9 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
       {/* ========================================================= */}
       {/* 4. MULTI-PRODUCT REPEATER TABLE                           */}
       {/* ========================================================= */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-xs text-left">
+      <div className="bg-white rounded-xl sm:rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+        <div className="overflow-x-auto scrollbar-thin">
+          <table className="w-full text-xs text-left min-w-[1100px]">
             <thead className="bg-slate-100/90 text-slate-700 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
               <tr>
                 <th className="px-3 py-3 w-10 text-center">#</th>
@@ -1532,18 +1532,18 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
         </div>
 
         {/* Big Repeater Add Button directly under table */}
-        <div className="p-4 bg-slate-50/50 border-t border-slate-200 flex items-center justify-between">
+        <div className="p-3 sm:p-4 bg-slate-50/50 border-t border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <button
             type="button"
             id="btn-add-repeater-row"
             onClick={handleAddRow}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border-2 border-dashed border-emerald-500/70 hover:border-emerald-600 bg-emerald-50/50 hover:bg-emerald-50 text-emerald-800 text-xs font-bold transition-all shadow-2xs cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl border-2 border-dashed border-emerald-500/70 hover:border-emerald-600 bg-emerald-50/50 hover:bg-emerald-50 text-emerald-800 text-xs font-bold transition-all shadow-2xs cursor-pointer w-full sm:w-auto"
           >
             <Plus className="w-4 h-4 text-emerald-600" />
             <span>+ Add Another Product Row</span>
           </button>
 
-          <div className="text-xs text-slate-500">
+          <div className="text-xs text-slate-500 text-center sm:text-right">
             Total products ready to save:{" "}
             <strong className="text-slate-900 font-mono">
               {summary.totalProducts}
@@ -1555,13 +1555,13 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
       {/* ========================================================= */}
       {/* 5. BOTTOM FINAL SUBMIT ACTION BAR (STICKY)                */}
       {/* ========================================================= */}
-      <div className="sticky bottom-4 z-20 bg-slate-900 text-white p-4 sm:p-5 rounded-2xl shadow-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-            <Package className="w-5 h-5" />
+      <div className="sticky bottom-2 sm:bottom-4 z-20 bg-slate-900 text-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-2xl border border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+            <Package className="w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div>
-            <h4 className="font-bold text-sm text-white flex items-center gap-2">
+            <h4 className="font-bold text-xs sm:text-sm text-white flex items-center gap-2 flex-wrap">
               <span>Ready to save new products?</span>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
                 {summary.totalProducts} item
@@ -1569,18 +1569,18 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
                 units)
               </span>
             </h4>
-            <p className="text-xs text-slate-400">
+            <p className="text-[11px] sm:text-xs text-slate-400">
               All entered items and custom categories will be saved permanently
               to your PC catalog.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-end">
           <button
             type="button"
             onClick={onBack}
-            className="px-4 py-2.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-300 text-xs font-bold transition-colors cursor-pointer"
+            className="flex-1 sm:flex-initial text-center px-4 py-2.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-300 text-xs font-bold transition-colors cursor-pointer"
           >
             Cancel &amp; Return
           </button>
@@ -1590,13 +1590,13 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
             id="btn-save-all-products-bottom"
             onClick={handleSaveAll}
             disabled={isSubmitting || summary.totalProducts === 0}
-            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs font-bold shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-2 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs font-bold shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <Save className="w-4 h-4 text-white" />
-            <span>
+            <Save className="w-4 h-4 text-white shrink-0" />
+            <span className="truncate">
               {isSubmitting
-                ? "Saving Products..."
-                : `Save ${summary.totalProducts > 0 ? `(${summary.totalProducts})` : ""} Products to Inventory`}
+                ? "Saving..."
+                : `Save ${summary.totalProducts > 0 ? `(${summary.totalProducts})` : ""} Products`}
             </span>
           </button>
         </div>
@@ -1606,8 +1606,8 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
       {/* 6. MODAL: ADD MY OWN CUSTOM CATEGORY                      */}
       {/* ========================================================= */}
       {isCategoryModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-fadeIn">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden animate-scaleUp">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4 animate-fadeIn">
+          <div className="bg-white rounded-xl sm:rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden animate-scaleUp">
             {/* Modal Header */}
             <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -1725,8 +1725,8 @@ export const AddProductsPage: React.FC<AddProductsPageProps> = ({
       {/* 7. MODAL: ADD MY OWN CUSTOM BRAND                         */}
       {/* ========================================================= */}
       {isBrandModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-fadeIn">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden animate-scaleUp">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-3 sm:p-4 animate-fadeIn">
+          <div className="bg-white rounded-xl sm:rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden animate-scaleUp">
             {/* Modal Header */}
             <div className="px-5 py-4 bg-slate-900 text-white flex items-center justify-between">
               <div className="flex items-center gap-2">

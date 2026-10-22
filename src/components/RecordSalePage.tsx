@@ -784,31 +784,30 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
   return (
     <div className="space-y-6 animate-fadeIn pb-24">
       {/* ========================================================= */}
-      {/* 1. TOP HEADER & NAVIGATION                                */}
-      {/* ========================================================= */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-5">
-        <div className="flex items-center gap-3">
+      {/* 1. TOP HEADER & NAVIGATION */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-slate-200/80 pb-4 sm:pb-5">
+        <div className="flex items-center gap-2.5 sm:gap-3">
           <button
             type="button"
             onClick={onBack}
-            className="p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-colors shadow-2xs cursor-pointer flex items-center justify-center"
+            className="p-2 sm:p-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-100 text-slate-700 transition-colors shadow-2xs cursor-pointer flex items-center justify-center shrink-0"
             title="Back to Sales Order List"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
               <span>Record New Sale Order</span>
             </h1>
           </div>
         </div>
 
         {/* Top Action Controls */}
-        <div className="flex items-center gap-2.5 self-start sm:self-auto flex-wrap">
+        <div className="flex items-center gap-2 sm:gap-2.5 w-full sm:w-auto">
           <button
             type="button"
             onClick={onBack}
-            className="px-4 py-2.5 rounded-md border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-colors cursor-pointer"
+            className="flex-1 sm:flex-initial px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-lg border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-colors cursor-pointer text-center"
           >
             Cancel
           </button>
@@ -819,7 +818,7 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
             onClick={handleSubmitSale}
             disabled={isSubmitting || validLines.length === 0}
             title="Complete Sale & Auto-Print Invoice (Shortcut: F9 or Ctrl+Enter)"
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs hover:shadow-sm active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-2 sm:flex-initial inline-flex items-center justify-center gap-1.5 sm:gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-xs hover:shadow-sm active:scale-[0.98] transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Check className="w-4 h-4 text-emerald-400" />
             <span>
@@ -836,7 +835,7 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
 
       {/* Error Alert Banner */}
       {error && (
-        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center justify-between shadow-2xs">
+        <div className="p-3 sm:p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-bold flex items-center justify-between shadow-2xs">
           <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
             <span>{error}</span>
@@ -854,77 +853,76 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
       {/* ========================================================= */}
       {/* 2. REAL-TIME KPI SUMMARY METRIC CARDS                     */}
       {/* ========================================================= */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         {/* Card 1: Total Line Items & Units */}
-        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+            <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
               Items &amp; Units
             </span>
-            <div className="text-2xl font-black font-mono text-slate-900 mt-1">
+            <div className="text-lg sm:text-2xl font-black font-mono text-slate-900 mt-0.5 sm:mt-1">
               {validLines.length}{" "}
-              <span className="text-xs text-slate-500 font-sans font-semibold">
+              <span className="text-[11px] sm:text-xs text-slate-500 font-sans font-semibold">
                 SKUs ({totalUnits} pcs)
               </span>
             </div>
           </div>
-          <span className="p-2.5 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <Package className="w-5 h-5" />
+          <span className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+            <Package className="w-4 h-4 sm:w-5 sm:h-5" />
           </span>
         </div>
 
         {/* Card 2: Gross Subtotal */}
-        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+            <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
               Gross Subtotal
             </span>
-            <div className="text-2xl font-black font-mono text-slate-900 mt-1">
+            <div className="text-lg sm:text-2xl font-black font-mono text-slate-900 mt-0.5 sm:mt-1 truncate">
               {formatPKR(grossSubtotal)}
             </div>
           </div>
-          <span className="p-2.5 rounded-xl bg-blue-50 text-blue-700 border border-blue-200">
-            <Tag className="w-5 h-5" />
+          <span className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-blue-50 text-blue-700 border border-blue-200 shrink-0">
+            <Tag className="w-4 h-4 sm:w-5 sm:h-5" />
           </span>
         </div>
 
         {/* Card 3: Total Discount */}
-        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
+        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-2xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold text-amber-700 uppercase tracking-wider block">
-              Total Discount Given
+            <span className="text-[10px] sm:text-[11px] font-bold text-amber-700 uppercase tracking-wider block">
+              Discount Given
             </span>
-            <div className="text-2xl font-black font-mono text-amber-600 mt-1">
+            <div className="text-lg sm:text-2xl font-black font-mono text-amber-600 mt-0.5 sm:mt-1 truncate">
               - {formatPKR(totalDiscount)}
             </div>
           </div>
-          <span className="p-2.5 rounded-xl bg-amber-50 text-amber-700 border border-amber-200">
-            <Percent className="w-5 h-5" />
+          <span className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-amber-50 text-amber-700 border border-amber-200 shrink-0">
+            <Percent className="w-4 h-4 sm:w-5 sm:h-5" />
           </span>
         </div>
 
         {/* Card 4: Net Grand Total */}
-        <div className="p-4 rounded-2xl bg-white border-2 border-emerald-500 shadow-xs flex items-center justify-between">
+        <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border-2 border-emerald-500 shadow-xs flex items-center justify-between">
           <div>
-            <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wider block">
+            <span className="text-[10px] sm:text-[11px] font-bold text-emerald-800 uppercase tracking-wider block">
               Net Payable Total
             </span>
-            <div className="text-2xl font-black font-mono text-emerald-600 mt-1">
+            <div className="text-lg sm:text-2xl font-black font-mono text-emerald-600 mt-0.5 sm:mt-1 truncate">
               {formatPKR(netTotalAmount)}
             </div>
           </div>
-          <span className="p-2.5 rounded-xl bg-emerald-500 text-white">
-            <DollarSign className="w-5 h-5" />
+          <span className="p-2 sm:p-2.5 rounded-lg sm:rounded-xl bg-emerald-500 text-white shrink-0">
+            <DollarSign className="w-4 h-4 sm:w-5 sm:h-5" />
           </span>
         </div>
       </div>
 
       {/* ========================================================= */}
-      {/* 3. INVOICE METADATA & QUICK BARCODE SCANNER TOOLBAR       */}
-      {/* ========================================================= */}
-      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200 shadow-2xs space-y-4">
+      {/* 3. INVOICE METADATA & QUICK BARCODE SCANNER TOOLBAR */}
+      <div className="bg-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200 shadow-2xs space-y-3 sm:space-y-4">
         {/* Row 1: Invoice Details */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-3.5">
           {/* Customer Name */}
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1">
@@ -938,7 +936,7 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
               placeholder="e.g. Walk in, Ahmed Ali..."
-              className="w-full px-3 py-2 rounded-md border border-slate-300 font-semibold text-slate-900 text-xs focus:ring-2 focus:ring-slate-900 focus:outline-hidden"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 font-semibold text-slate-900 text-xs focus:ring-2 focus:ring-slate-900 focus:outline-hidden"
             />
           </div>
 
@@ -952,7 +950,7 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
               type="text"
               value={invoiceNumber}
               onChange={(e) => setInvoiceNumber(e.target.value)}
-              className="w-full px-3 py-2 rounded-md border border-slate-300 font-mono font-bold text-slate-900 text-xs focus:ring-2 focus:ring-slate-900 focus:outline-hidden bg-slate-50"
+              className="w-full px-3 py-2 rounded-lg border border-slate-300 font-mono font-bold text-slate-900 text-xs focus:ring-2 focus:ring-slate-900 focus:outline-hidden bg-slate-50"
             />
           </div>
 
@@ -966,7 +964,7 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full px-2.5 py-2 rounded-md border border-slate-300 font-mono text-xs font-bold text-slate-900 focus:outline-hidden cursor-pointer"
+              className="w-full px-2.5 py-2 rounded-lg border border-slate-300 font-mono text-xs font-bold text-slate-900 focus:outline-hidden cursor-pointer"
             />
           </div>
           <div>
@@ -978,13 +976,13 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
               type="text"
               value={saleTime}
               onChange={(e) => setSaleTime(e.target.value)}
-              className="w-full px-2.5 py-2 rounded-md border border-slate-300 font-mono text-xs font-bold text-slate-900 focus:outline-hidden"
+              className="w-full px-2.5 py-2 rounded-lg border border-slate-300 font-mono text-xs font-bold text-slate-900 focus:outline-hidden"
             />
           </div>
         </div>
 
         {/* Row 2: Rapid Barcode / SKU Scan Bar */}
-        <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2.5 sm:gap-3">
           <form
             onSubmit={handleBarcodeScanSubmit}
             className="flex-1 w-full flex items-center gap-2"
@@ -996,13 +994,13 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
                 type="text"
                 value={barcodeScanInput}
                 onChange={(e) => setBarcodeScanInput(e.target.value)}
-                placeholder="Scan physical barcode or type SKU to instantly add product (Press Enter)..."
-                className="w-full pl-9 pr-4 py-2 rounded-md border border-slate-300 bg-slate-50 focus:bg-white text-xs font-mono font-semibold text-slate-900 focus:ring-2 focus:ring-slate-900 focus:outline-hidden"
+                placeholder="Scan barcode or type SKU (Press Enter)..."
+                className="w-full pl-9 pr-4 py-2 rounded-lg border border-slate-300 bg-slate-50 focus:bg-white text-xs font-mono font-semibold text-slate-900 focus:ring-2 focus:ring-slate-900 focus:outline-hidden shadow-2xs"
               />
             </div>
             <button
               type="submit"
-              className="px-4 py-2 rounded-md bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors cursor-pointer shrink-0 flex items-center gap-1.5"
+              className="px-3.5 sm:px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-colors cursor-pointer shrink-0 flex items-center gap-1.5"
             >
               <ScanLine className="w-3.5 h-3.5 text-emerald-400" />
               <span>Scan / Add</span>
@@ -1029,9 +1027,9 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
       {/* ========================================================= */}
       <div
         ref={searchContainerRef}
-        className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-visible"
+        className="bg-white rounded-xl sm:rounded-2xl border border-slate-200 shadow-xs"
       >
-        <div className="p-4 bg-slate-50/80 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="p-3.5 sm:p-4 bg-slate-50/80 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 flex-wrap">
             <ShoppingCart className="w-4 h-4 text-emerald-600" />
             <span className="font-black text-xs uppercase tracking-wider text-slate-900">
@@ -1042,8 +1040,8 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
             </span>
 
             {/* View Mode Display Preference Pill */}
-            <div className="flex items-center bg-slate-200/80 p-0.5 rounded-md text-[10px] font-semibold text-slate-700 ml-2">
-              <span className="px-1.5 text-slate-500">Search View:</span>
+            <div className="flex items-center bg-slate-200/80 p-0.5 rounded-md text-[10px] font-semibold text-slate-700 sm:ml-2">
+              <span className="px-1 text-slate-500 hidden sm:inline">Search:</span>
               <button
                 type="button"
                 onClick={() => handleToggleProductViewMode("blocks")}
@@ -1052,7 +1050,7 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
                     ? "bg-white text-slate-900 shadow-2xs font-bold"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
-                title="Show matching products as Grid (2 in a row)"
+                title="Show matching products as Grid"
               >
                 <LayoutGrid className="w-3 h-3 text-emerald-600" />
                 <span>Grid</span>
@@ -1073,7 +1071,7 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 self-start sm:self-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
             <button
               type="button"
               onClick={() => handleAddMultipleRows(5)}
@@ -1091,13 +1089,13 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition-colors cursor-pointer shadow-2xs"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>+ Add Another Product</span>
+              <span>+ Add Product</span>
             </button>
           </div>
         </div>
 
-        <div className="overflow-x-visible">
-          <table className="w-full text-xs text-left">
+        <div className="overflow-x-auto scrollbar-thin">
+          <table className="w-full text-xs text-left min-w-[720px] sm:min-w-[780px]">
             <thead className="bg-slate-100/90 text-slate-700 font-bold uppercase text-[10px] tracking-wider border-b border-slate-200">
               <tr>
                 <th className="px-3 py-3 w-10 text-center">#</th>
@@ -1200,7 +1198,7 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
 
                         {/* Floating Product Search Popover with Toggle: List or Blocks (Grid 2 in a row) */}
                         {isSearchOpen && (
-                          <div className="absolute left-0 top-full mt-1.5 w-[1700px] max-w-[96vw] z-50 bg-white rounded-md shadow-2xl border border-slate-200 p-3.5 space-y-3 animate-fadeIn max-h-[490px] flex flex-col">
+                          <div className="absolute left-0 top-full mt-1.5 w-[92vw] sm:w-[640px] md:w-[780px] lg:w-[960px] max-w-[95vw] z-50 bg-white rounded-md shadow-2xl border border-slate-200 p-3 sm:p-3.5 space-y-3 animate-fadeIn max-h-[490px] flex flex-col">
                             {/* Popover Header: Results Count + Blocks / List Switcher */}
                             <div className="flex items-center justify-between px-1 text-[11px] font-bold text-slate-600 border-b border-slate-100 pb-2.5">
                               <div className="flex items-center gap-1.5">
@@ -1364,9 +1362,9 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
                                 </div>
                               ) : productViewMode === "blocks" ? (
                                 /* ============================================ */
-                                /* VIEW 1: GRID LAYOUT (2 PRODUCTS IN A ROW)    */
+                                /* VIEW 1: GRID LAYOUT (RESPONSIVE CARDS)       */
                                 /* ============================================ */
-                                <div className="grid grid-cols-3 gap-2.5 pt-0.5">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5 pt-0.5">
                                   {matchedProducts.map((p) => {
                                     const isOut = p.currentStock <= 0;
                                     return (
@@ -1677,13 +1675,13 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
         </div>
 
         {/* Big Repeater Add Button directly under table */}
-        <div className="p-4 bg-slate-50/50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div className="p-3 sm:p-4 bg-slate-50/50 border-t border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
               type="button"
               id="btn-add-repeater-row-bottom"
               onClick={handleAddNewRow}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md border-2 border-dashed border-emerald-500/70 hover:border-emerald-600 bg-emerald-50/50 hover:bg-emerald-50 text-emerald-800 text-xs font-bold transition-all shadow-2xs cursor-pointer w-full sm:w-auto"
+              className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-md border-2 border-dashed border-emerald-500/70 hover:border-emerald-600 bg-emerald-50/50 hover:bg-emerald-50 text-emerald-800 text-xs font-bold transition-all shadow-2xs cursor-pointer"
             >
               <Plus className="w-4 h-4 text-emerald-600" />
               <span>+ Add Another Product Item</span>
@@ -1692,16 +1690,16 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
             <button
               type="button"
               onClick={() => handleAddMultipleRows(5)}
-              className="px-3 py-3 rounded-md border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-colors cursor-pointer shrink-0"
+              className="px-3 py-2.5 sm:py-3 rounded-md border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-bold transition-colors cursor-pointer shrink-0"
               title="Add 5 more product rows"
             >
               +5 Rows
             </button>
           </div>
 
-          <div className="flex items-center gap-3 text-xs">
-            <span className="font-bold text-slate-700">
-              Extra Overall Invoice Discount (Rs.):
+          <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3 text-xs w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200">
+            <span className="font-bold text-slate-700 whitespace-nowrap">
+              Extra Overall Discount (Rs.):
             </span>
             <input
               type="number"
@@ -1711,55 +1709,41 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
                 setOrderDiscount(parseFloat(e.target.value) || 0)
               }
               placeholder="0"
-              className="w-28 px-3 py-1.5 rounded-md border border-slate-300 font-mono font-bold text-amber-700 text-xs text-left focus:outline-hidden focus:ring-2 focus:ring-slate-900 bg-white"
+              className="w-24 sm:w-28 px-2.5 sm:px-3 py-1.5 rounded-md border border-slate-300 font-mono font-bold text-amber-700 text-xs text-left focus:outline-hidden focus:ring-2 focus:ring-slate-900 bg-white"
             />
           </div>
         </div>
       </div>
 
       {/* ========================================================= */}
-      {/* 5. NOTES & REMARKS                                        */}
-      {/* ========================================================= */}
-      {/* <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-        <label className="block text-xs font-bold text-slate-700 mb-1">
-          Order Notes / Warranty / Remarks (Optional)
-        </label>
-        <textarea
-          rows={2}
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
-          placeholder="e.g. 1 year official warranty, return/exchange within 7 days, customer phone..."
-          className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs font-medium text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-slate-900"
-        />
-      </div> */}
-
-      {/* ========================================================= */}
       {/* 6. BOTTOM SUBMIT ACTION BAR (STICKY)                      */}
       {/* ========================================================= */}
-      <div className="sticky bottom-4 z-20 bg-slate-900 text-white p-4 sm:p-5 rounded-2xl shadow-2xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-4 sm:gap-6">
+      <div className="sticky bottom-2 sm:bottom-4 z-20 bg-slate-900 text-white p-3.5 sm:p-5 rounded-xl sm:rounded-2xl shadow-2xl border border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="flex items-center justify-between sm:justify-start gap-3 sm:gap-6">
           <div>
             <span className="text-[10px] sm:text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
               Grand Total To Charge
             </span>
-            <div className="text-2xl sm:text-3xl font-bold text-emerald-400">
+            <div className="text-xl sm:text-3xl font-bold text-emerald-400">
               {formatPKR(netTotalAmount)}
             </div>
           </div>
           <div className="h-10 w-px bg-slate-700 hidden sm:block" />
-          <div className="hidden sm:block text-md text-slate-300">
-            <span className="text-white">
-              {validLines.length} item{validLines.length !== 1 ? "s" : ""} •{" "}
-              {totalUnits} unit{totalUnits !== 1 ? "s" : ""}
+          <div className="text-xs sm:text-sm text-slate-300 text-right sm:text-left">
+            <span className="text-white font-medium">
+              {validLines.length} item{validLines.length !== 1 ? "s" : ""}
+            </span>
+            <span className="text-slate-400 block sm:inline">
+              {" "}• {totalUnits} unit{totalUnits !== 1 ? "s" : ""}
             </span>
           </div>
         </div>
 
-        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+        <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-end">
           <button
             type="button"
             onClick={onBack}
-            className="px-4 py-2.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-300 text-xs font-bold transition-colors cursor-pointer"
+            className="flex-1 sm:flex-initial text-center px-4 py-2.5 rounded-xl border border-slate-700 hover:bg-slate-800 text-slate-300 text-xs font-bold transition-colors cursor-pointer"
           >
             Cancel
           </button>
@@ -1770,15 +1754,15 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
             onClick={handleSubmitSale}
             disabled={isSubmitting || validLines.length === 0}
             title="Complete Sale & Auto-Print Invoice (Shortcut: F9 or Ctrl+Enter)"
-            className="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs font-bold shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+            className="flex-2 sm:flex-initial inline-flex items-center justify-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white text-xs font-bold shadow-md hover:shadow-lg transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <Check className="w-4 h-4 text-white" />
-            <span>
+            <Check className="w-4 h-4 text-white shrink-0" />
+            <span className="truncate">
               {isSubmitting
-                ? "Recording Sale..."
-                : `Complete Sale (${formatPKR(netTotalAmount)})`}
+                ? "Recording..."
+                : `Complete (${formatPKR(netTotalAmount)})`}
             </span>
-            <kbd className="inline-flex items-center px-1.5 py-0.5 rounded bg-emerald-700 text-[10px] font-mono font-bold text-white border border-emerald-600">
+            <kbd className="hidden md:inline-flex items-center px-1.5 py-0.5 rounded bg-emerald-700 text-[10px] font-mono font-bold text-white border border-emerald-600">
               F9
             </kbd>
           </button>

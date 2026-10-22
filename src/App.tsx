@@ -417,7 +417,7 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-full w-full mx-auto px-4 sm:px-6 lg:px-8 py-7">
+      <main className="flex-1 max-w-full w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-7">
         {activeTab === "dashboard" && (
           <Dashboard
             metrics={metrics}

@@ -9,10 +9,8 @@ import {
   ShieldCheck,
   ArrowRight,
   Loader2,
-  HardDrive,
   Mail,
   Smartphone,
-  KeyRound,
   ArrowLeft,
   CheckCircle2,
 } from "lucide-react";
@@ -62,12 +60,12 @@ export const Login: React.FC<LoginProps> = ({
 
   // Forgot Password / 2FA recovery state
   const [recoveryUsername, setRecoveryUsername] = useState("");
-  const [recoveryUserFullName, setRecoveryUserFullName] = useState("");
+  const [, setRecoveryUserFullName] = useState("");
   const [twoFactorEmail, setTwoFactorEmail] = useState("");
   const [twoFactorMobile, setTwoFactorMobile] = useState("");
   const [maskedEmail, setMaskedEmail] = useState("");
   const [maskedMobile, setMaskedMobile] = useState("");
-  const [has2FA, setHas2FA] = useState(true);
+  const [, setHas2FA] = useState(true);
   const [recoveryToken, setRecoveryToken] = useState<string>("");
   const [isRecoveryLoading, setIsRecoveryLoading] = useState(false);
   const [recoveryError, setRecoveryError] = useState<string | null>(null);
@@ -237,42 +235,46 @@ export const Login: React.FC<LoginProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 flex flex-col justify-center items-center p-4 sm:p-6 selection:bg-slate-900 selection:text-white">
-      {/* Background Accent Subtle Glow */}
-      <div className="w-full max-w-md">
-        {/* Brand Header */}
-        <div className="text-center mb-5">
+    <div className="min-h-screen min-h-[100dvh] bg-slate-100 flex flex-col justify-center items-center px-3.5 py-6 sm:px-6 sm:py-10 selection:bg-slate-900 selection:text-white antialiased">
+      <div className="w-full max-w-[420px] mx-auto flex flex-col justify-center">
+        {/* Brand Logo & Header */}
+        <div className="text-center mb-4 sm:mb-5">
           {storeSettings?.logoUrl ? (
-            <div className="w-64 inline-flex items-center justify-center">
+            <div className="w-48 sm:w-60 max-w-[80vw] max-h-20 inline-flex items-center justify-center">
               <img
                 src={storeSettings.logoUrl}
                 alt={storeSettings.brandName || "Brand Logo"}
-                className="w-full h-full object-contain"
+                className="w-full h-full max-h-20 object-contain"
                 referrerPolicy="no-referrer"
               />
             </div>
           ) : (
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-slate-900 text-white shadow-md mb-4 border border-slate-800">
-              <Boxes className="w-8 h-8 text-emerald-400" />
+            <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-900 text-white shadow-md mb-2.5 sm:mb-3 border border-slate-800">
+              <Boxes className="w-7 h-7 sm:w-8 sm:h-8 text-emerald-400" />
             </div>
           )}
         </div>
 
         {/* Login Card */}
-        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-md p-6 sm:p-9">
+        <div className="bg-white rounded-2xl border border-slate-200/90 shadow-md p-5 sm:p-7 md:p-8 transition-all">
           {viewMode === "login" && (
             <>
-              <div className="mb-2">
-                <h2 className="text-xl font-bold text-slate-900">Sign In</h2>
+              <div className="mb-4 sm:mb-5">
+                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+                  Sign In
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 mt-1">
+                  Enter your credentials to access the counter
+                </p>
               </div>
 
               {/* Success Message Alert */}
               {successMessage && (
                 <div
                   id="login-success-alert"
-                  className="mb-5 p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-3 text-sm text-emerald-800"
+                  className="mb-4 p-3 sm:p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 flex items-start gap-2.5 sm:gap-3 text-xs sm:text-sm text-emerald-800"
                 >
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold block">Password Updated</span>
                     <span>{successMessage}</span>
@@ -284,9 +286,9 @@ export const Login: React.FC<LoginProps> = ({
               {errorMessage && (
                 <div
                   id="login-error-alert"
-                  className="mb-5 p-3.5 rounded-xl bg-red-50 border border-red-200 flex items-start gap-3 text-sm text-red-700"
+                  className="mb-4 p-3 sm:p-3.5 rounded-xl bg-red-50 border border-red-200 flex items-start gap-2.5 sm:gap-3 text-xs sm:text-sm text-red-700"
                 >
-                  <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 shrink-0 mt-0.5" />
                   <div>
                     <span className="font-bold block">
                       Authentication Error
@@ -296,18 +298,18 @@ export const Login: React.FC<LoginProps> = ({
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
                 {/* Username Field */}
                 <div>
                   <label
                     htmlFor="login-username"
-                    className="block text-sm font-semibold text-slate-700 mb-2"
+                    className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5"
                   >
                     Username
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <User className="w-5 h-5" />
+                      <User className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <input
                       id="login-username"
@@ -318,24 +320,24 @@ export const Login: React.FC<LoginProps> = ({
                       value={username}
                       onChange={(e) => setUsername(e.target.value)}
                       placeholder="Enter username"
-                      className="w-full pl-11 pr-4 py-3 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 text-slate-900"
+                      className="w-full pl-10 sm:pl-11 pr-4 py-3 sm:py-3.5 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-900/10 text-slate-900 bg-white transition-all placeholder:text-slate-400"
                     />
                   </div>
                 </div>
 
                 {/* Password Field */}
                 <div>
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center justify-between mb-1.5">
                     <label
                       htmlFor="login-password"
-                      className="block text-sm font-semibold text-slate-700"
+                      className="block text-xs sm:text-sm font-semibold text-slate-700"
                     >
                       Password
                     </label>
                   </div>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <Lock className="w-5 h-5" />
+                      <Lock className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <input
                       id="login-password"
@@ -345,39 +347,39 @@ export const Login: React.FC<LoginProps> = ({
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Enter password"
-                      className="w-full pl-11 pr-11 py-3 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 text-slate-900"
+                      className="w-full pl-10 sm:pl-11 pr-11 py-3 sm:py-3.5 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-900/10 text-slate-900 bg-white transition-all placeholder:text-slate-400"
                     />
                     <button
                       type="button"
                       id="btn-toggle-password"
                       onClick={() => setShowPassword(!showPassword)}
                       tabIndex={-1}
-                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                      className="absolute inset-y-0 right-0 px-3.5 flex items-center justify-center text-slate-400 hover:text-slate-600 active:text-slate-900 transition-colors cursor-pointer touch-manipulation min-w-[44px]"
                       title={showPassword ? "Hide password" : "Show password"}
                     >
                       {showPassword ? (
-                        <EyeOff className="w-5 h-5" />
+                        <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
                       ) : (
-                        <Eye className="w-5 h-5" />
+                        <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
                       )}
                     </button>
                   </div>
                 </div>
 
                 {/* Stay Logged In for 48 Hours Checkbox */}
-                <div className="flex items-center justify-between pt-1 pb-1">
+                <div className="flex items-center justify-between pt-0.5 pb-0.5">
                   <label
                     htmlFor="login-stay-logged-in"
-                    className="inline-flex items-center gap-2.5 cursor-pointer group select-none"
+                    className="inline-flex items-center gap-2.5 cursor-pointer group select-none py-1 touch-manipulation"
                   >
                     <input
                       id="login-stay-logged-in"
                       type="checkbox"
                       checked={stayLoggedIn}
                       onChange={(e) => setStayLoggedIn(e.target.checked)}
-                      className="w-4.5 h-4.5 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer accent-slate-900"
+                      className="w-4 h-4 sm:w-4.5 sm:h-4.5 rounded border-slate-300 text-slate-900 focus:ring-slate-900 cursor-pointer accent-slate-900 shrink-0"
                     />
-                    <span className="text-sm text-slate-600 group-hover:text-slate-900 font-medium transition-colors">
+                    <span className="text-xs sm:text-sm text-slate-600 group-hover:text-slate-900 font-medium transition-colors">
                       Stay logged in for 48 hours
                     </span>
                   </label>
@@ -388,28 +390,28 @@ export const Login: React.FC<LoginProps> = ({
                   type="submit"
                   id="btn-login-submit"
                   disabled={isLoading}
-                  className="w-full mt-2 inline-flex items-center justify-center gap-2.5 py-3.5 px-5 rounded-xl bg-[#ff8a05] hover:bg-[#fe691e] disabled:bg-[#fe691e] text-white font-semibold text-base transition-colors shadow-sm cursor-pointer"
+                  className="w-full mt-2 inline-flex items-center justify-center gap-2 py-3 sm:py-3.5 px-5 rounded-xl bg-[#ff8a05] hover:bg-[#fe691e] active:bg-[#e05814] disabled:bg-[#fe691e] text-white font-semibold text-base transition-all shadow-sm active:scale-[0.99] touch-manipulation cursor-pointer"
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin text-white" />
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-white" />
                       <span>Verifying Credentials...</span>
                     </>
                   ) : (
                     <>
                       <span>Sign In</span>
-                      <ArrowRight className="w-5 h-5 text-white" />
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </>
                   )}
                 </button>
 
-                {/* Forgot Password Link & Quick Access */}
-                <div className="flex items-center justify-between pt-2">
+                {/* Forgot Password Link */}
+                <div className="flex items-center justify-between pt-1">
                   <button
                     type="button"
                     id="btn-forgot-password"
                     onClick={handleOpenForgotPassword}
-                    className="text-sm text-slate-500 hover:text-slate-900 font-medium transition-colors hover:underline cursor-pointer"
+                    className="text-xs sm:text-sm text-slate-500 hover:text-slate-900 font-medium transition-colors hover:underline cursor-pointer py-1.5 touch-manipulation"
                   >
                     Forgot Password?
                   </button>
@@ -421,24 +423,24 @@ export const Login: React.FC<LoginProps> = ({
           {/* Forgot Password (2FA Verification) View */}
           {viewMode === "forgot_2fa" && (
             <div>
-              <div className="mb-5">
+              <div className="mb-4 sm:mb-5">
                 <button
                   type="button"
                   id="btn-back-to-login"
                   onClick={handleBackToLogin}
-                  className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 transition-colors font-medium mb-3 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-slate-600 hover:text-slate-900 transition-colors font-semibold mb-2 sm:mb-3 py-1.5 px-2 -ml-2 rounded-lg hover:bg-slate-100 active:bg-slate-200 cursor-pointer touch-manipulation"
                 >
                   <ArrowLeft className="w-4 h-4" />
-                  <span className="text-sm font-semibold">Go Back</span>
+                  <span>Go Back</span>
                 </button>
                 <div className="flex items-center gap-3">
                   <div>
-                    <h2 className="text-lg font-bold text-slate-900">
+                    <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
                       Forgot Password
                     </h2>
                   </div>
                 </div>
-                <p className="text-sm text-slate-600 mt-3 bg-slate-50 p-3 rounded-xl border border-slate-200 leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-600 mt-2.5 bg-slate-50 p-3 rounded-xl border border-slate-200 leading-relaxed">
                   Enter the 2FA email and mobile number saved in{" "}
                   <span className="font-semibold text-slate-800">
                     Settings &rarr; Security &amp; Password
@@ -451,27 +453,25 @@ export const Login: React.FC<LoginProps> = ({
               {recoveryError && (
                 <div
                   id="recovery-error-alert"
-                  className="mb-4 p-3.5 rounded-xl bg-red-50 border border-red-200 flex items-center gap-2.5 text-sm text-red-700 font-medium"
+                  className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 flex items-center gap-2.5 text-xs sm:text-sm text-red-700 font-medium"
                 >
-                  <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
+                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 shrink-0" />
                   <span>{recoveryError}</span>
                 </div>
               )}
 
-              <form onSubmit={handleVerify2FA} className="space-y-4">
+              <form onSubmit={handleVerify2FA} className="space-y-3.5 sm:space-y-4">
                 {/* Account Username */}
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label
-                      htmlFor="recovery-username"
-                      className="block text-sm font-semibold text-slate-700"
-                    >
-                      Username
-                    </label>
-                  </div>
+                  <label
+                    htmlFor="recovery-username"
+                    className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5"
+                  >
+                    Username
+                  </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <User className="w-5 h-5" />
+                      <User className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <input
                       id="recovery-username"
@@ -484,29 +484,26 @@ export const Login: React.FC<LoginProps> = ({
                         setRecoveryUsername(val);
                         handleLookupUsernameHints(val);
                       }}
-                      placeholder="e.g. admin or worker username"
-                      className="w-full pl-11 pr-4 py-3 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 text-slate-900 font-mono"
+                      placeholder="e.g. obaid"
+                      className="w-full pl-10 sm:pl-11 pr-4 py-3 sm:py-3.5 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-900/10 text-slate-900 bg-white font-mono placeholder:font-sans placeholder:text-slate-400 transition-all"
                     />
                   </div>
-                  <p className="text-xs text-slate-500 mt-1">
-                    Enter the username of your account to retrieve your 2FA
-                    hints.
+                  <p className="text-[11px] sm:text-xs text-slate-500 mt-1">
+                    Enter your account username to retrieve security hints.
                   </p>
                 </div>
 
                 {/* 2FA Email Field */}
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label
-                      htmlFor="recovery-email"
-                      className="block text-sm font-semibold text-slate-700"
-                    >
-                      2FA Email Address
-                    </label>
-                  </div>
+                  <label
+                    htmlFor="recovery-email"
+                    className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5"
+                  >
+                    2FA Email Address
+                  </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <Mail className="w-5 h-5" />
+                      <Mail className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <input
                       id="recovery-email"
@@ -517,12 +514,12 @@ export const Login: React.FC<LoginProps> = ({
                         setTwoFactorEmail(e.target.value);
                         if (recoveryError) setRecoveryError(null);
                       }}
-                      placeholder="Email"
-                      className="w-full pl-11 pr-4 py-3 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 text-slate-900"
+                      placeholder="Enter registered email"
+                      className="w-full pl-10 sm:pl-11 pr-4 py-3 sm:py-3.5 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-900/10 text-slate-900 bg-white placeholder:text-slate-400 transition-all"
                     />
                   </div>
                   {maskedEmail && (
-                    <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                    <p className="text-[11px] sm:text-xs text-slate-500 mt-1 flex items-center gap-1">
                       <span>Hint:</span>
                       <span className="font-mono font-medium text-slate-700">
                         {maskedEmail}
@@ -533,17 +530,15 @@ export const Login: React.FC<LoginProps> = ({
 
                 {/* 2FA Mobile Number Field */}
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label
-                      htmlFor="recovery-mobile"
-                      className="block text-sm font-semibold text-slate-700"
-                    >
-                      2FA Mobile Number
-                    </label>
-                  </div>
+                  <label
+                    htmlFor="recovery-mobile"
+                    className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5"
+                  >
+                    2FA Mobile Number
+                  </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <Smartphone className="w-5 h-5" />
+                      <Smartphone className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <input
                       id="recovery-mobile"
@@ -554,12 +549,12 @@ export const Login: React.FC<LoginProps> = ({
                         setTwoFactorMobile(e.target.value);
                         if (recoveryError) setRecoveryError(null);
                       }}
-                      placeholder="1234567890"
-                      className="w-full pl-11 pr-4 py-3 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 text-slate-900"
+                      placeholder="03XXXXXXXXX"
+                      className="w-full pl-10 sm:pl-11 pr-4 py-3 sm:py-3.5 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-900/10 text-slate-900 bg-white placeholder:text-slate-400 transition-all font-mono"
                     />
                   </div>
                   {maskedMobile && (
-                    <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                    <p className="text-[11px] sm:text-xs text-slate-500 mt-1 flex items-center gap-1">
                       <span>Hint:</span>
                       <span className="font-mono font-medium text-slate-700">
                         {maskedMobile}
@@ -573,17 +568,17 @@ export const Login: React.FC<LoginProps> = ({
                   type="submit"
                   id="btn-verify-2fa"
                   disabled={isRecoveryLoading}
-                  className="w-full mt-2 inline-flex items-center justify-center gap-2.5 py-3.5 px-5 rounded-xl bg-[#fe691e] hover:bg-[#ff8a05] disabled:bg-[#ff8a05] text-white font-semibold text-base transition-colors shadow-sm cursor-pointer"
+                  className="w-full mt-2 inline-flex items-center justify-center gap-2 py-3 sm:py-3.5 px-5 rounded-xl bg-[#fe691e] hover:bg-[#ff8a05] active:bg-[#e05814] disabled:bg-[#ff8a05] text-white font-semibold text-base transition-all shadow-sm active:scale-[0.99] touch-manipulation cursor-pointer"
                 >
                   {isRecoveryLoading ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin text-white" />
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-white" />
                       <span>Verifying 2FA Data...</span>
                     </>
                   ) : (
                     <>
                       <span>Verify 2FA Information</span>
-                      <ArrowRight className="w-5 h-5 text-white" />
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </>
                   )}
                 </button>
@@ -594,18 +589,18 @@ export const Login: React.FC<LoginProps> = ({
           {/* Set New Password View */}
           {viewMode === "reset_password" && (
             <div>
-              <div className="mb-6">
+              <div className="mb-4 sm:mb-5">
                 <div className="flex items-center gap-3">
                   <div>
-                    <h2 className="text-lg font-bold text-slate-900">
+                    <h2 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight">
                       Set New Password
                     </h2>
                   </div>
                 </div>
-                <div className="mt-3 p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex gap-2.5 text-sm text-emerald-800">
-                  <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600" />
+                <div className="mt-2.5 p-3 rounded-xl bg-emerald-50 border border-emerald-200 flex gap-2.5 text-xs sm:text-sm text-emerald-800">
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 shrink-0 text-emerald-600 mt-0.5" />
                   <span>
-                    2FA credentials matched. Enter your new password below.
+                    2FA credentials verified. Enter your new password below.
                   </span>
                 </div>
               </div>
@@ -614,25 +609,25 @@ export const Login: React.FC<LoginProps> = ({
               {recoveryError && (
                 <div
                   id="reset-pass-error-alert"
-                  className="mb-4 p-3.5 rounded-xl bg-red-50 border border-red-200 flex items-center gap-2.5 text-sm text-red-700 font-medium"
+                  className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 flex items-center gap-2.5 text-xs sm:text-sm text-red-700 font-medium"
                 >
-                  <AlertCircle className="w-5 h-5 text-red-500 shrink-0" />
+                  <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 shrink-0" />
                   <span>{recoveryError}</span>
                 </div>
               )}
 
-              <form onSubmit={handleResetPassword} className="space-y-4">
+              <form onSubmit={handleResetPassword} className="space-y-3.5 sm:space-y-4">
                 {/* New Password Field */}
                 <div>
                   <label
                     htmlFor="input-new-password"
-                    className="block text-sm font-semibold text-slate-700 mb-2"
+                    className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5"
                   >
                     New Password (min. 6 characters)
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <Lock className="w-5 h-5" />
+                      <Lock className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <input
                       id="input-new-password"
@@ -644,22 +639,22 @@ export const Login: React.FC<LoginProps> = ({
                         if (recoveryError) setRecoveryError(null);
                       }}
                       placeholder="Enter new password"
-                      className="w-full pl-11 pr-11 py-3 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 text-slate-900"
+                      className="w-full pl-10 sm:pl-11 pr-11 py-3 sm:py-3.5 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-900/10 text-slate-900 bg-white placeholder:text-slate-400 transition-all"
                     />
                     <button
                       type="button"
                       id="btn-toggle-new-password"
                       onClick={() => setShowNewPassword(!showNewPassword)}
                       tabIndex={-1}
-                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                      className="absolute inset-y-0 right-0 px-3.5 flex items-center justify-center text-slate-400 hover:text-slate-600 active:text-slate-900 transition-colors cursor-pointer touch-manipulation min-w-[44px]"
                       title={
                         showNewPassword ? "Hide password" : "Show password"
                       }
                     >
                       {showNewPassword ? (
-                        <EyeOff className="w-5 h-5" />
+                        <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
                       ) : (
-                        <Eye className="w-5 h-5" />
+                        <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
                       )}
                     </button>
                   </div>
@@ -669,13 +664,13 @@ export const Login: React.FC<LoginProps> = ({
                 <div>
                   <label
                     htmlFor="input-confirm-password"
-                    className="block text-sm font-semibold text-slate-700 mb-2"
+                    className="block text-xs sm:text-sm font-semibold text-slate-700 mb-1.5"
                   >
                     Confirm New Password
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <Lock className="w-5 h-5" />
+                      <Lock className="w-4 h-4 sm:w-5 sm:h-5" />
                     </div>
                     <input
                       id="input-confirm-password"
@@ -687,7 +682,7 @@ export const Login: React.FC<LoginProps> = ({
                         if (recoveryError) setRecoveryError(null);
                       }}
                       placeholder="Confirm new password"
-                      className="w-full pl-11 pr-11 py-3 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 text-slate-900"
+                      className="w-full pl-10 sm:pl-11 pr-11 py-3 sm:py-3.5 text-base rounded-xl border border-slate-200 focus:outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-900/10 text-slate-900 bg-white placeholder:text-slate-400 transition-all"
                     />
                     <button
                       type="button"
@@ -696,15 +691,15 @@ export const Login: React.FC<LoginProps> = ({
                         setShowConfirmPassword(!showConfirmPassword)
                       }
                       tabIndex={-1}
-                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors"
+                      className="absolute inset-y-0 right-0 px-3.5 flex items-center justify-center text-slate-400 hover:text-slate-600 active:text-slate-900 transition-colors cursor-pointer touch-manipulation min-w-[44px]"
                       title={
                         showConfirmPassword ? "Hide password" : "Show password"
                       }
                     >
                       {showConfirmPassword ? (
-                        <EyeOff className="w-5 h-5" />
+                        <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
                       ) : (
-                        <Eye className="w-5 h-5" />
+                        <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
                       )}
                     </button>
                   </div>
@@ -715,17 +710,17 @@ export const Login: React.FC<LoginProps> = ({
                   type="submit"
                   id="btn-update-password"
                   disabled={isRecoveryLoading}
-                  className="w-full mt-2 inline-flex items-center justify-center gap-2.5 py-3.5 px-5 rounded-xl bg-[#fe691e] hover:bg-[#ff8a05] disabled:bg-[#ff8a05] text-white font-semibold text-base transition-colors shadow-sm cursor-pointer"
+                  className="w-full mt-2 inline-flex items-center justify-center gap-2 py-3 sm:py-3.5 px-5 rounded-xl bg-[#fe691e] hover:bg-[#ff8a05] active:bg-[#e05814] disabled:bg-[#ff8a05] text-white font-semibold text-base transition-all shadow-sm active:scale-[0.99] touch-manipulation cursor-pointer"
                 >
                   {isRecoveryLoading ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin text-white" />
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin text-white" />
                       <span>Updating Password...</span>
                     </>
                   ) : (
                     <>
                       <span>Update Password</span>
-                      <CheckCircle2 className="w-5 h-5 text-white" />
+                      <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                     </>
                   )}
                 </button>
@@ -735,7 +730,7 @@ export const Login: React.FC<LoginProps> = ({
                   <button
                     type="button"
                     onClick={handleBackToLogin}
-                    className="text-sm text-slate-500 hover:text-slate-900 transition-colors font-medium cursor-pointer"
+                    className="text-xs sm:text-sm text-slate-500 hover:text-slate-900 transition-colors font-medium cursor-pointer py-1.5 touch-manipulation"
                   >
                     Cancel and Return to Sign In
                   </button>
@@ -743,6 +738,12 @@ export const Login: React.FC<LoginProps> = ({
               </form>
             </div>
           )}
+        </div>
+
+        {/* Security & System Badge */}
+        <div className="mt-4 sm:mt-5 text-center flex items-center justify-center gap-1.5 text-[11px] sm:text-xs text-slate-500 font-medium select-none">
+          <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 shrink-0" />
+          <span>Encrypted Authentication &bull; POS System</span>
         </div>
       </div>
     </div>

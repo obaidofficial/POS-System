@@ -424,23 +424,26 @@ export const Sales: React.FC<SalesProps> = ({
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Top Header & Action */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2.5">
+          <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap">
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
               <span>Sales Orders & Invoicing</span>
             </h1>
             {isWorker && (
-              <span className="text-xs font-bold px-2.5 py-1 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200 uppercase tracking-wider">
+              <span className="text-[11px] sm:text-xs font-bold px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-md bg-emerald-100 text-emerald-800 border border-emerald-200 uppercase tracking-wider">
                 Today's Register
               </span>
             )}
           </div>
+          <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+            Monitor real-time sales transactions, invoices, and register receipts
+          </p>
         </div>
 
-        <div className="flex items-center gap-2.5 flex-wrap self-start sm:self-auto">
+        <div className="flex items-center gap-2.5 flex-wrap w-full sm:w-auto">
           {/* Record New Sale Button */}
           <button
             type="button"
@@ -449,7 +452,7 @@ export const Sales: React.FC<SalesProps> = ({
               setViewMode("NEW_SALE");
               if (onViewModeChange) onViewModeChange("NEW_SALE");
             }}
-            className="inline-flex items-center justify-center gap-2.5 px-5 py-3 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white text-base font-semibold shadow-xs hover:shadow-sm active:scale-[0.98] transition-all cursor-pointer"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:py-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-sm sm:text-base font-semibold shadow-xs hover:shadow-sm active:scale-[0.98] transition-all cursor-pointer"
           >
             <Plus className="w-5 h-5 text-white" />
             <span>Record New Sale</span>
@@ -459,23 +462,23 @@ export const Sales: React.FC<SalesProps> = ({
 
       {/* Worker Present Day Focus Banner */}
       {isWorker && (
-        <div className="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-200 rounded-xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-200 rounded-xl p-3.5 sm:p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold shadow-xs shrink-0">
-              <Calendar className="w-5 h-5 text-white" />
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold shadow-xs shrink-0">
+              <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="text-base font-bold text-slate-900">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-sm sm:text-base font-bold text-slate-900">
                   Today's Sales Register
                 </span>
-                <span className="text-[12px] px-2 py-0.5 rounded-sm font-bold bg-emerald-600 text-white uppercase tracking-wider">
+                <span className="text-[11px] sm:text-xs px-2 py-0.5 rounded-sm font-bold bg-emerald-600 text-white uppercase tracking-wider">
                   {todayStr}
                 </span>
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-start sm:self-auto">
             <span className="text-xs font-semibold bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-lg border border-emerald-200">
               {presentSales.length} Order{presentSales.length !== 1 ? "s" : ""}{" "}
               Today
@@ -486,20 +489,20 @@ export const Sales: React.FC<SalesProps> = ({
 
       {/* KPI Cards: Tailored for Worker vs Admin */}
       {isWorker ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Today's Cash Revenue */}
-          <div className="p-5 rounded-2xl bg-white border border-emerald-200 shadow-xs flex flex-col justify-between">
+          <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white border border-emerald-200 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-bold uppercase tracking-wider text-emerald-800">
+                <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-emerald-800">
                   Today's Cash Revenue
                 </span>
-                <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
-                  <Banknote className="w-5 h-5" />
+                <div className="p-2 sm:p-2.5 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+                  <Banknote className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
               </div>
-              <div className="mt-3">
-                <div className="text-3xl sm:text-4xl font-black text-emerald-700 font-mono tabular-nums">
+              <div className="mt-2.5 sm:mt-3">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-700 font-mono tabular-nums break-words">
                   {formatPKR(presentRevenue)}
                 </div>
               </div>
@@ -507,20 +510,20 @@ export const Sales: React.FC<SalesProps> = ({
           </div>
 
           {/* Today's Cash Invoices */}
-          <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-bold uppercase tracking-wider text-slate-600">
+                <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-600">
                   Today's Invoices
                 </span>
-                <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
-                  <Receipt className="w-5 h-5" />
+                <div className="p-2 sm:p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
+                  <Receipt className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
               </div>
-              <div className="mt-3">
-                <div className="text-3xl sm:text-4xl font-black text-slate-900 font-mono tabular-nums">
+              <div className="mt-2.5 sm:mt-3">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 font-mono tabular-nums">
                   {presentSales.length}{" "}
-                  <span className="text-base font-normal text-slate-700">
+                  <span className="text-sm sm:text-base font-normal text-slate-700">
                     Bills
                   </span>
                 </div>
@@ -529,20 +532,20 @@ export const Sales: React.FC<SalesProps> = ({
           </div>
 
           {/* Today's Units Dispatched */}
-          <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-bold uppercase tracking-wider text-slate-600">
+                <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-600">
                   Today's Items Sold
                 </span>
-                <div className="p-2.5 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100">
-                  <ShoppingCart className="w-5 h-5" />
+                <div className="p-2 sm:p-2.5 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100">
+                  <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
               </div>
-              <div className="mt-3">
-                <div className="text-3xl sm:text-4xl font-black text-slate-900 font-mono tabular-nums">
+              <div className="mt-2.5 sm:mt-3">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 font-mono tabular-nums">
                   {presentUnitsSold}{" "}
-                  <span className="text-base font-normal text-slate-500">
+                  <span className="text-sm sm:text-base font-normal text-slate-500">
                     Units
                   </span>
                 </div>
@@ -551,21 +554,21 @@ export const Sales: React.FC<SalesProps> = ({
           </div>
 
           {/* Present Day Shift Indicator */}
-          <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-bold uppercase tracking-wider text-slate-600">
+                <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-600">
                   Active Shift Date
                 </span>
-                <div className="p-2.5 rounded-xl bg-slate-100 text-slate-700">
-                  <Calendar className="w-5 h-5 text-emerald-600" />
+                <div className="p-2 sm:p-2.5 rounded-xl bg-slate-100 text-slate-700">
+                  <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
                 </div>
               </div>
-              <div className="mt-3">
-                <div className="text-lg font-bold text-slate-900 font-mono">
+              <div className="mt-2.5 sm:mt-3">
+                <div className="text-base sm:text-lg font-bold text-slate-900 font-mono">
                   {todayStr}
                 </div>
-                <div className="mt-1.5 text-sm text-emerald-700 font-semibold">
+                <div className="mt-1 text-xs sm:text-sm text-emerald-700 font-semibold">
                   {datePeriodFilter === "PRESENT"
                     ? "Showing Today's Data"
                     : `Filter: ${datePeriodFilter}`}
@@ -575,114 +578,114 @@ export const Sales: React.FC<SalesProps> = ({
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {/* Total Sales Revenue */}
-          <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-bold uppercase tracking-wider text-slate-600">
+                <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-600">
                   Total Sales Revenue
                 </span>
-                <div className="p-2.5 rounded-xl bg-purple-50 text-purple-700">
-                  <ShoppingCart className="w-5 h-5" />
+                <div className="p-2 sm:p-2.5 rounded-xl bg-purple-50 text-purple-700">
+                  <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
               </div>
-              <div className="mt-3">
-                <div className="text-3xl sm:text-4xl font-black text-slate-900 font-mono tabular-nums">
+              <div className="mt-2.5 sm:mt-3">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 font-mono tabular-nums break-words">
                   {formatPKR(totalRevenue)}
                 </div>
                 <div className="mt-3 pt-3 border-t border-slate-100 grid grid-cols-1 gap-2 text-xs font-mono">
-                  <div className="bg-slate-50 p-2.5 rounded-xl text-slate-800 border border-slate-100">
+                  <div className="bg-slate-50 p-2 sm:p-2.5 rounded-xl text-slate-800 border border-slate-100">
                     <span className="text-xs block font-sans text-slate-500 font-semibold mb-0.5">
                       Previous:
                     </span>
-                    <span className="font-bold text-sm sm:text-base tabular-nums">
+                    <span className="font-bold text-xs sm:text-base tabular-nums">
                       {formatPKR(previousRevenue)}
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="mt-3.5 text-sm text-slate-600 font-medium">
+            <div className="mt-3 text-xs sm:text-sm text-slate-600 font-medium">
               {sales.length} total orders recorded
             </div>
           </div>
 
           {/* Cash In Hand / Today's Cash Sales */}
-          <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-bold uppercase tracking-wider text-slate-600">
+                <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-600">
                   Today's Sales
                 </span>
-                <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600">
-                  <Banknote className="w-5 h-5" />
+                <div className="p-2 sm:p-2.5 rounded-xl bg-emerald-50 text-emerald-600">
+                  <Banknote className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
               </div>
-              <div className="mt-3">
-                <div className="text-3xl sm:text-4xl font-black text-emerald-700 font-mono tabular-nums">
+              <div className="mt-2.5 sm:mt-3">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-emerald-700 font-mono tabular-nums break-words">
                   {formatPKR(presentRevenue)}
                 </div>
-                <div className="mt-2 text-sm text-slate-600">
+                <div className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-slate-600">
                   {presentSales.length} cash order
                   {presentSales.length !== 1 ? "s" : ""} received today
                 </div>
               </div>
             </div>
-            <div className="mt-3.5 text-sm text-emerald-700 font-semibold">
+            <div className="mt-3 text-xs sm:text-sm text-emerald-700 font-semibold">
               Counter Register Active
             </div>
           </div>
 
           {/* Total Previous Cash Sales */}
-          <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-bold uppercase tracking-wider text-slate-600">
+                <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-600">
                   Previous Sales Total
                 </span>
-                <div className="p-2.5 rounded-xl bg-slate-100 text-slate-700">
-                  <History className="w-5 h-5" />
+                <div className="p-2 sm:p-2.5 rounded-xl bg-slate-100 text-slate-700">
+                  <History className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
               </div>
-              <div className="mt-3">
-                <div className="text-3xl sm:text-4xl font-black text-slate-900 font-mono tabular-nums">
+              <div className="mt-2.5 sm:mt-3">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 font-mono tabular-nums break-words">
                   {formatPKR(previousRevenue)}
                 </div>
-                <div className="mt-2 text-sm text-slate-600">
+                <div className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-slate-600">
                   {previousSales.length} historical sales
                 </div>
               </div>
             </div>
-            <div className="mt-3.5 text-sm text-slate-600 font-medium">
+            <div className="mt-3 text-xs sm:text-sm text-slate-600 font-medium">
               Archived counter receipts
             </div>
           </div>
 
           {/* Units Dispatched */}
-          <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-sm font-bold uppercase tracking-wider text-slate-600">
+                <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-slate-600">
                   Units Dispatched
                 </span>
-                <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600">
-                  <Receipt className="w-5 h-5" />
+                <div className="p-2 sm:p-2.5 rounded-xl bg-blue-50 text-blue-600">
+                  <Receipt className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
               </div>
-              <div className="mt-3">
-                <div className="text-3xl sm:text-4xl font-black text-slate-900 font-mono tabular-nums">
+              <div className="mt-2.5 sm:mt-3">
+                <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 font-mono tabular-nums">
                   {totalUnitsSold}{" "}
-                  <span className="text-base font-normal text-slate-500">
+                  <span className="text-sm sm:text-base font-normal text-slate-500">
                     units
                   </span>
                 </div>
-                <div className="mt-2 text-sm text-slate-600">
-                  Deducted automatically from PC stock database.
+                <div className="mt-1.5 sm:mt-2 text-xs sm:text-sm text-slate-600">
+                  Deducted automatically from stock database.
                 </div>
               </div>
             </div>
-            <div className="mt-3.5 text-sm text-emerald-700 font-semibold">
+            <div className="mt-3 text-xs sm:text-sm text-emerald-700 font-semibold">
               Active Real-time Stock Sync
             </div>
           </div>
@@ -691,29 +694,29 @@ export const Sales: React.FC<SalesProps> = ({
 
       {/* Administrator Date Range Performance Bar (From Date -> To Date, Items Sold, Total Sale, Profit) */}
       {!isWorker && dateRangeStats && (
-        <div className="p-5 rounded-2xl bg-gradient-to-r from-purple-50/80 via-indigo-50/60 to-purple-50/80 border border-purple-200/90 shadow-2xs space-y-4">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="p-3.5 sm:p-5 rounded-xl sm:rounded-2xl bg-gradient-to-r from-purple-50/80 via-indigo-50/60 to-purple-50/80 border border-purple-200/90 shadow-2xs space-y-3 sm:space-y-4">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
             {/* Header and Date Range Controls */}
-            <div className="flex items-start sm:items-center gap-3.5">
-              <div className="p-3 rounded-xl bg-purple-600 text-white font-bold shrink-0 shadow-xs">
-                <Calendar className="w-6 h-6 text-white" />
+            <div className="flex items-start sm:items-center gap-3 sm:gap-3.5">
+              <div className="p-2 sm:p-3 rounded-xl bg-purple-600 text-white font-bold shrink-0 shadow-xs mt-0.5 sm:mt-0">
+                <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
               </div>
               <div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-sm font-bold uppercase tracking-wider text-purple-950">
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                  <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-purple-950">
                     Date Range Performance
                   </span>
                   <span className="text-slate-400 font-normal">·</span>
-                  <span className="text-xs font-bold text-purple-800 bg-purple-100 px-2 py-0.5 rounded-md border border-purple-200">
+                  <span className="text-[10px] sm:text-xs font-bold text-purple-800 bg-purple-100 px-2 py-0.5 rounded-md border border-purple-200">
                     Admin Only
                   </span>
                   {dateRangeStats.rangeLabel && (
-                    <span className="text-xs font-mono font-bold text-slate-700 bg-white px-2.5 py-0.5 rounded-md border border-purple-200 shadow-2xs">
+                    <span className="text-[10px] sm:text-xs font-mono font-bold text-slate-700 bg-white px-2 sm:px-2.5 py-0.5 rounded-md border border-purple-200 shadow-2xs">
                       {dateRangeStats.rangeLabel}
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-slate-600 mt-1">
+                <p className="text-xs text-slate-600 mt-0.5 sm:mt-1">
                   Filter sales between specific dates to analyze items sold,
                   revenue, and gross profit.
                 </p>
@@ -721,13 +724,13 @@ export const Sales: React.FC<SalesProps> = ({
             </div>
 
             {/* "From Date" -> "To Date" Inputs and Presets */}
-            <div className="flex flex-wrap items-center gap-2.5 bg-white/95 p-2.5 rounded-xl border border-purple-200 shadow-2xs">
-              <div className="flex items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-2 bg-white/95 p-2 sm:p-2.5 rounded-xl border border-purple-200 shadow-2xs w-full lg:w-auto">
+              <div className="flex items-center gap-1.5 flex-1 sm:flex-initial">
                 <label
                   htmlFor="input-sales-from-date"
                   className="text-xs font-bold text-slate-700 whitespace-nowrap"
                 >
-                  From Date:
+                  From:
                 </label>
                 <input
                   type="date"
@@ -737,7 +740,7 @@ export const Sales: React.FC<SalesProps> = ({
                     setFromDate(e.target.value);
                     setDatePeriodFilter("ALL");
                   }}
-                  className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs"
+                  className="w-full sm:w-auto px-2 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs"
                 />
               </div>
 
@@ -745,12 +748,12 @@ export const Sales: React.FC<SalesProps> = ({
                 →
               </span>
 
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 flex-1 sm:flex-initial">
                 <label
                   htmlFor="input-sales-to-date"
                   className="text-xs font-bold text-slate-700 whitespace-nowrap"
                 >
-                  To Date:
+                  To:
                 </label>
                 <input
                   type="date"
@@ -760,12 +763,12 @@ export const Sales: React.FC<SalesProps> = ({
                     setToDate(e.target.value);
                     setDatePeriodFilter("ALL");
                   }}
-                  className="px-2.5 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs"
+                  className="w-full sm:w-auto px-2 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-2xs"
                 />
               </div>
 
               {/* Quick Preset Buttons */}
-              <div className="flex items-center gap-1 border-l border-slate-200 pl-2 ml-1">
+              <div className="flex items-center gap-1 sm:border-l sm:border-slate-200 sm:pl-2 w-full sm:w-auto justify-end mt-1 sm:mt-0">
                 <button
                   type="button"
                   id="btn-range-preset-today"
@@ -821,83 +824,80 @@ export const Sales: React.FC<SalesProps> = ({
             </div>
           </div>
 
-          {/* Three Required Performance Metric Cards: Items Sold, Total Sale, Profit */}
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-1">
+          {/* Three Required Performance Metric Cards: Items Sold, Total Sale, Cost, Profit */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 pt-1">
             {/* Card 1: Items Sold */}
-            <div className="bg-white p-3.5 rounded-xl border border-purple-200 shadow-2xs flex items-center justify-between">
+            <div className="bg-white p-3 sm:p-3.5 rounded-xl border border-purple-200 shadow-2xs flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+                <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider block">
                   Items Sold
                 </span>
-                <span className="text-lg sm:text-xl font-black font-mono text-slate-900 tabular-nums mt-0.5 block">
+                <span className="text-base sm:text-xl font-black font-mono text-slate-900 tabular-nums mt-0.5 block">
                   {dateRangeStats.itemsSold} units
                 </span>
-                <span className="text-[11px] text-slate-500 font-medium">
-                  Across {dateRangeStats.invoicesCount} invoice
+                <span className="text-[10px] sm:text-[11px] text-slate-500 font-medium block truncate">
+                  {dateRangeStats.invoicesCount} invoice
                   {dateRangeStats.invoicesCount !== 1 ? "s" : ""}
                 </span>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 border border-purple-200/60 flex items-center justify-center shrink-0">
-                <Boxes className="w-5 h-5 text-purple-600" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-purple-50 text-purple-600 border border-purple-200/60 flex items-center justify-center shrink-0">
+                <Boxes className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
               </div>
             </div>
 
             {/* Card 2: Total Sale */}
-            <div className="bg-white p-3.5 rounded-xl border border-purple-200 shadow-2xs flex items-center justify-between">
+            <div className="bg-white p-3 sm:p-3.5 rounded-xl border border-purple-200 shadow-2xs flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+                <span className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider block">
                   Total Sale
                 </span>
-                <span className="text-lg sm:text-xl font-black font-mono text-slate-900 tabular-nums mt-0.5 block">
+                <span className="text-base sm:text-xl font-black font-mono text-slate-900 tabular-nums mt-0.5 block truncate">
                   {formatPKR(dateRangeStats.totalSale)}
                 </span>
-                <span className="text-[11px] text-slate-500 font-medium">
-                  Gross sales revenue
+                <span className="text-[10px] sm:text-[11px] text-slate-500 font-medium block truncate">
+                  Gross sales
                 </span>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 flex items-center justify-center shrink-0">
-                <Banknote className="w-5 h-5 text-indigo-600" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200/60 flex items-center justify-center shrink-0">
+                <Banknote className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-600" />
               </div>
             </div>
 
-            {/* Card 4: Cost of Goods */}
-            <div className="bg-white p-3.5 rounded-xl border border-amber-300 shadow-2xs flex items-center justify-between">
+            {/* Card 3: Cost of Goods */}
+            <div className="bg-white p-3 sm:p-3.5 rounded-xl border border-amber-300 shadow-2xs flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-amber-800 uppercase tracking-wider block">
+                <span className="text-[10px] sm:text-xs font-bold text-amber-800 uppercase tracking-wider block">
                   Cost of Goods
                 </span>
-
-                <span className="text-lg sm:text-xl font-black font-mono text-amber-700 tabular-nums mt-0.5 block">
+                <span className="text-base sm:text-xl font-black font-mono text-amber-700 tabular-nums mt-0.5 block truncate">
                   {formatPKR(dateRangeStats.totalSale - dateRangeStats.profit)}
                 </span>
-
-                <span className="text-[11px] text-amber-700 font-medium">
-                  Total inventory cost
+                <span className="text-[10px] sm:text-[11px] text-amber-700 font-medium block truncate">
+                  Inventory cost
                 </span>
               </div>
-
-              <div className="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 border border-amber-200/60 flex items-center justify-center shrink-0">
-                <DollarSign className="w-5 h-5 text-amber-600" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-amber-50 text-amber-600 border border-amber-200/60 flex items-center justify-center shrink-0">
+                <DollarSign className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
               </div>
             </div>
 
-            {/* Card 3: Profit */}
-            <div className="bg-white p-3.5 rounded-xl border border-emerald-300 shadow-2xs flex items-center justify-between">
+            {/* Card 4: Profit */}
+            <div className="bg-white p-3 sm:p-3.5 rounded-xl border border-emerald-300 shadow-2xs flex items-center justify-between">
               <div>
-                <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider block">
+                <span className="text-[10px] sm:text-xs font-bold text-emerald-800 uppercase tracking-wider block">
                   Profit
                 </span>
-                <span className="text-lg sm:text-xl font-black font-mono text-emerald-700 tabular-nums mt-0.5 block">
+                <span className="text-base sm:text-xl font-black font-mono text-emerald-700 tabular-nums mt-0.5 block truncate">
                   {dateRangeStats.profit >= 0
                     ? `${formatPKR(dateRangeStats.profit)}`
                     : formatPKR(dateRangeStats.profit)}
                 </span>
-                <span className="text-[11px] text-emerald-700 font-semibold font-mono">
-                  {dateRangeStats.margin.toFixed(1)}% profit margin
+                <span className="text-[10px] sm:text-[11px] text-emerald-700 font-semibold font-mono block truncate">
+                  {dateRangeStats.margin.toFixed(1)}% margin
                 </span>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0">
-                <TrendingUp className="w-5 h-5 text-emerald-600" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0">
+                <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
               </div>
             </div>
           </div>
@@ -905,24 +905,24 @@ export const Sales: React.FC<SalesProps> = ({
       )}
 
       {/* Filter and Search Bar with Date Period */}
-      <div className="p-4 sm:p-5 rounded-xl bg-white border border-slate-200/90 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="p-3.5 sm:p-5 rounded-xl bg-white border border-slate-200/90 shadow-xs flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 sm:gap-4">
         {/* Search */}
-        <div className="relative w-full sm:w-188">
-          <Search className="w-5 h-5 text-slate-400 absolute left-3.5 top-3" />
+        <div className="relative w-full lg:flex-1">
+          <Search className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400 absolute left-3.5 top-3" />
           <input
             id="sales-search-input"
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search invoice #, customer, product name..."
-            className="w-full pl-11 pr-4 py-2.5 rounded-md border border-slate-200 text-sm sm:text-base focus:outline-none focus:border-slate-400"
+            className="w-full pl-10 sm:pl-11 pr-4 py-2 sm:py-2.5 rounded-lg border border-slate-200 text-xs sm:text-sm focus:outline-none focus:border-slate-400 shadow-2xs"
           />
         </div>
 
         {/* Date Period & Month Selector */}
-        <div className="flex items-center gap-2.5 w-full sm:w-auto overflow-x-auto flex-wrap sm:flex-nowrap">
-          <span className="text-sm font-bold text-slate-600 flex items-center gap-1.5 mr-1">
-            <Calendar className="w-4 h-4 text-slate-500" />
+        <div className="flex items-center gap-2 overflow-x-auto max-w-full pb-1 sm:pb-0 scrollbar-none w-full lg:w-auto">
+          <span className="text-xs sm:text-sm font-bold text-slate-600 flex items-center gap-1.5 shrink-0 mr-1">
+            <Calendar className="w-3.5 h-3.5 text-slate-500" />
             <span>Period:</span>
           </span>
 
@@ -933,14 +933,14 @@ export const Sales: React.FC<SalesProps> = ({
               setFromDate(todayStr);
               setToDate(todayStr);
             }}
-            className={`px-4 py-2.5 rounded-md text-sm font-semibold transition-colors flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+            className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5 sm:gap-2 whitespace-nowrap shrink-0 cursor-pointer ${
               datePeriodFilter === "PRESENT"
                 ? "bg-emerald-600 text-white shadow-xs font-bold"
                 : "bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200"
             }`}
           >
             <span
-              className={`w-2.5 h-2.5 rounded-full ${datePeriodFilter === "PRESENT" ? "bg-white animate-pulse" : "bg-emerald-500"}`}
+              className={`w-2 h-2 rounded-full ${datePeriodFilter === "PRESENT" ? "bg-white animate-pulse" : "bg-emerald-500"}`}
             ></span>
             <span>Today ({presentSales.length})</span>
           </button>
@@ -953,7 +953,7 @@ export const Sales: React.FC<SalesProps> = ({
                 setFromDate("");
                 setToDate("");
               }}
-              className={`px-4 py-2.5 rounded-md text-sm font-semibold transition-colors whitespace-nowrap cursor-pointer ${
+              className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                 datePeriodFilter === "ALL" && !fromDate && !toDate
                   ? "bg-slate-900 text-white shadow-xs"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
@@ -972,13 +972,13 @@ export const Sales: React.FC<SalesProps> = ({
                 setFromDate("");
                 setToDate(yesterdayStr);
               }}
-              className={`px-4 py-2.5 rounded-md text-sm font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+              className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer ${
                 datePeriodFilter === "PREVIOUS"
                   ? "bg-slate-800 text-white shadow-xs"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
               }`}
             >
-              <History className="w-4 h-4 text-slate-500" />
+              <History className="w-3.5 h-3.5 text-slate-500" />
               <span>Previous ({previousSales.length})</span>
             </button>
           )}
@@ -989,22 +989,22 @@ export const Sales: React.FC<SalesProps> = ({
               id="btn-filter-returns-exchanges"
               type="button"
               onClick={() => setReturnsOnlyFilter((prev) => !prev)}
-              className={`px-4 py-2.5 rounded-md text-sm font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+              className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-semibold transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer ${
                 returnsOnlyFilter
                   ? "bg-purple-600 text-white shadow-xs font-bold"
                   : "bg-purple-50 text-purple-800 hover:bg-purple-100 border border-purple-200"
               }`}
               title="Filter sales orders with returned or exchanged items"
             >
-              <RotateCcw className="w-4 h-4" />
+              <RotateCcw className="w-3.5 h-3.5" />
               <span>Returns / Exchanges ({totalReturnExchangeSales})</span>
             </button>
           )}
 
           {/* Administrator Month Selector */}
           {!isWorker && availableMonths.length > 0 && (
-            <div className="flex items-center gap-2 pl-2 sm:border-l sm:border-slate-200">
-              <span className="text-sm font-bold text-slate-600 whitespace-nowrap">
+            <div className="flex items-center gap-1.5 pl-2 sm:border-l sm:border-slate-200 shrink-0">
+              <span className="text-xs sm:text-sm font-bold text-slate-600 whitespace-nowrap">
                 Month:
               </span>
               <select
@@ -1024,7 +1024,7 @@ export const Sales: React.FC<SalesProps> = ({
                     setToDate("");
                   }
                 }}
-                className="px-3.5 py-2.5 rounded-md border border-slate-300 bg-white text-sm font-semibold text-slate-800 shadow-2xs outline-none cursor-pointer"
+                className="px-2.5 sm:px-3.5 py-1.5 sm:py-2.5 rounded-lg border border-slate-300 bg-white text-xs sm:text-sm font-semibold text-slate-800 shadow-2xs outline-none cursor-pointer"
               >
                 <option value="ALL">
                   All Months ({availableMonths.length})

@@ -174,11 +174,11 @@ export const FinancialPeriodBreakdown: React.FC<FinancialPeriodBreakdownProps> =
         </div>
 
         {/* Tab switchers */}
-        <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-slate-200/80 text-[11px] shadow-2xs">
+        <div className="flex items-center gap-1 bg-white p-1 rounded-lg border border-slate-200/80 text-[11px] shadow-2xs overflow-x-auto max-w-full scrollbar-none w-full sm:w-auto">
           <button
             id="btn-subtab-overview"
             onClick={() => setActiveSubTab('overview')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
               activeSubTab === 'overview'
                 ? 'bg-slate-900 text-white shadow-2xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -189,7 +189,7 @@ export const FinancialPeriodBreakdown: React.FC<FinancialPeriodBreakdownProps> =
           <button
             id="btn-subtab-present-details"
             onClick={() => setActiveSubTab('present_details')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
               activeSubTab === 'present_details'
                 ? 'bg-slate-900 text-white shadow-2xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
@@ -200,7 +200,7 @@ export const FinancialPeriodBreakdown: React.FC<FinancialPeriodBreakdownProps> =
           <button
             id="btn-subtab-previous-details"
             onClick={() => setActiveSubTab('previous_details')}
-            className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
               activeSubTab === 'previous_details'
                 ? 'bg-slate-900 text-white shadow-2xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'

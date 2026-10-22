@@ -641,14 +641,14 @@ export const MonthlyFinancialReports: React.FC<MonthlyFinancialReportsProps> = (
       {/* VIEW MODE 1: MONTHLY DETAIL FOR SELECTED MONTH */}
       {/* ===================================================================== */}
       {activeReportTab === 'MONTHLY_DETAIL' && (
-        <div className="p-6 space-y-8">
+        <div className="p-4 sm:p-6 space-y-6 sm:space-y-8">
           {/* Quick Sub-Navigation Category Filter */}
           <div className="flex flex-wrap items-center justify-between border-b border-slate-100 pb-3 gap-2">
-            <div className="flex items-center gap-1.5 text-xs font-semibold">
+            <div className="flex items-center gap-1.5 text-xs font-semibold overflow-x-auto max-w-full scrollbar-none py-0.5 w-full sm:w-auto">
               <button
                 type="button"
                 onClick={() => setActiveCategoryView('ALL')}
-                className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                   activeCategoryView === 'ALL'
                     ? 'bg-slate-900 text-white shadow-2xs'
                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
@@ -659,7 +659,7 @@ export const MonthlyFinancialReports: React.FC<MonthlyFinancialReportsProps> = (
               <button
                 type="button"
                 onClick={() => setActiveCategoryView('ITEMS')}
-                className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                   activeCategoryView === 'ITEMS'
                     ? 'bg-purple-900 text-white shadow-2xs'
                     : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
@@ -670,7 +670,7 @@ export const MonthlyFinancialReports: React.FC<MonthlyFinancialReportsProps> = (
               <button
                 type="button"
                 onClick={() => setActiveCategoryView('EPJC')}
-                className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                   activeCategoryView === 'EPJC'
                     ? 'bg-blue-900 text-white shadow-2xs'
                     : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
@@ -681,7 +681,7 @@ export const MonthlyFinancialReports: React.FC<MonthlyFinancialReportsProps> = (
               <button
                 type="button"
                 onClick={() => setActiveCategoryView('LOAD')}
-                className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer ${
+                className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer whitespace-nowrap shrink-0 ${
                   activeCategoryView === 'LOAD'
                     ? 'bg-amber-900 text-white shadow-2xs'
                     : 'bg-amber-50 text-amber-800 hover:bg-amber-100'
