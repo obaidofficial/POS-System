@@ -781,6 +781,42 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isSubmitting]);
 
+  // Floating Product Search Popover positioning (Full Width & High Z-Index)
+  const [popoverTop, setPopoverTop] = useState<number | null>(null);
+
+  const updatePopoverPosition = () => {
+    if (activeSearchRowId && searchContainerRef.current) {
+      const inputEl = document.getElementById(
+        `product-search-input-${activeSearchRowId}`,
+      );
+      if (inputEl && searchContainerRef.current) {
+        const containerRect = searchContainerRef.current.getBoundingClientRect();
+        const inputRect = inputEl.getBoundingClientRect();
+        const relativeTop = inputRect.bottom - containerRect.top + 6;
+        setPopoverTop(Math.max(50, relativeTop));
+      }
+    }
+  };
+
+  useEffect(() => {
+    updatePopoverPosition();
+    const handleEvents = () => {
+      updatePopoverPosition();
+    };
+    window.addEventListener("resize", handleEvents);
+    window.addEventListener("scroll", handleEvents, true);
+    return () => {
+      window.removeEventListener("resize", handleEvents);
+      window.removeEventListener("scroll", handleEvents, true);
+    };
+  }, [activeSearchRowId, rows]);
+
+  const activeRow = rows.find((r) => r.id === activeSearchRowId);
+  const activeRowIndex = rows.findIndex((r) => r.id === activeSearchRowId);
+  const matchedProducts = activeRow
+    ? getMatchingProducts(activeRow.searchQuery, categoryFilter)
+    : [];
+
   return (
     <div className="space-y-6 animate-fadeIn pb-24">
       {/* ========================================================= */}
@@ -1027,7 +1063,7 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
       {/* ========================================================= */}
       <div
         ref={searchContainerRef}
-        className="bg-white rounded-xl sm:rounded-2xl border border-slate-200 shadow-xs"
+        className="bg-white rounded-xl sm:rounded-2xl border border-slate-200 shadow-xs relative"
       >
         <div className="p-3.5 sm:p-4 bg-slate-50/80 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 flex-wrap">
@@ -1134,7 +1170,9 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
                 return (
                   <tr
                     key={row.id}
-                    className="hover:bg-slate-50/80 transition-colors group focus-within:bg-amber-50/20"
+                    className={`hover:bg-slate-50/80 transition-colors group focus-within:bg-amber-50/20 ${
+                      isSearchOpen ? "bg-emerald-50/60 ring-2 ring-emerald-500/40" : ""
+                    }`}
                   >
                     {/* Row Index */}
                     <td className="px-3 py-3 text-center font-bold text-slate-400">
@@ -1143,372 +1181,58 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
 
                     {/* Interactive Product Search Field with Live List or Blocks */}
                     <td className="px-3 py-3 relative">
-                      <div className="relative">
-                        <div className="relative flex items-center">
-                          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                          <input
-                            type="text"
-                            value={
-                              hasSelected && !isSearchOpen
-                                ? `${row.name} (${row.sku})`
-                                : row.searchQuery
-                            }
-                            onFocus={() => {
-                              setActiveSearchRowId(row.id);
-                              if (hasSelected) {
-                                // Keep query ready for editing
-                                setRows((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, searchQuery: "" }
-                                      : r,
-                                  ),
-                                );
-                              }
-                            }}
-                            onChange={(e) => {
-                              const val = e.target.value;
+                      <div className="relative flex items-center">
+                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        <input
+                          id={`product-search-input-${row.id}`}
+                          type="text"
+                          value={
+                            hasSelected && !isSearchOpen
+                              ? `${row.name} (${row.sku})`
+                              : row.searchQuery
+                          }
+                          onFocus={() => {
+                            setActiveSearchRowId(row.id);
+                            if (hasSelected) {
+                              // Keep query ready for editing
                               setRows((prev) =>
                                 prev.map((r) =>
                                   r.id === row.id
-                                    ? { ...r, searchQuery: val }
+                                    ? { ...r, searchQuery: "" }
                                     : r,
                                 ),
                               );
-                              setActiveSearchRowId(row.id);
-                            }}
-                            placeholder="Type any alphabet (e.g. 'c', 'case', 'cable')..."
-                            className={`w-full pl-9 pr-8 py-2 rounded-md border text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-slate-900 transition-all ${
-                              hasSelected
-                                ? "bg-emerald-50/70 border-emerald-300 text-slate-900"
-                                : "bg-white border-slate-300 text-slate-900 placeholder:text-slate-400"
-                            }`}
-                          />
-                          {hasSelected && (
-                            <button
-                              type="button"
-                              onClick={() => handleClearRowProduct(row.id)}
-                              title="Clear and search another product"
-                              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-600 p-0.5 cursor-pointer"
-                            >
-                              <X className="w-3.5 h-3.5" />
-                            </button>
-                          )}
-                        </div>
-
-                        {/* Floating Product Search Popover with Toggle: List or Blocks (Grid 2 in a row) */}
-                        {isSearchOpen && (
-                          <div className="absolute left-0 top-full mt-1.5 w-[92vw] sm:w-[640px] md:w-[780px] lg:w-[960px] max-w-[95vw] z-50 bg-white rounded-md shadow-2xl border border-slate-200 p-3 sm:p-3.5 space-y-3 animate-fadeIn max-h-[490px] flex flex-col">
-                            {/* Popover Header: Results Count + Blocks / List Switcher */}
-                            <div className="flex items-center justify-between px-1 text-[11px] font-bold text-slate-600 border-b border-slate-100 pb-2.5">
-                              <div className="flex items-center gap-1.5">
-                                <span className="font-extrabold text-slate-900 text-xs">
-                                  {matchedProducts.length > 0
-                                    ? `Found (${matchedProducts.length}) Products`
-                                    : "No Products Found"}
-                                </span>
-                                {row.searchQuery.trim() && (
-                                  <span className="text-[10px] text-slate-400">
-                                    matching "{row.searchQuery}"
-                                  </span>
-                                )}
-                              </div>
-
-                              {/* View Mode Toggle: Grid (2 per row) vs List */}
-                              <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200">
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    handleToggleProductViewMode("blocks")
-                                  }
-                                  className={`px-2.5 py-1 rounded text-[10px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                                    productViewMode === "blocks"
-                                      ? "bg-slate-900 text-white shadow-xs"
-                                      : "text-slate-600 hover:text-slate-900"
-                                  }`}
-                                  title="Show 2 products in a row in grid layout"
-                                >
-                                  <LayoutGrid className="w-3.5 h-3.5 text-emerald-400" />
-                                  <span>Grid</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    handleToggleProductViewMode("list")
-                                  }
-                                  className={`px-2.5 py-1 rounded text-[10px] font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                                    productViewMode === "list"
-                                      ? "bg-slate-900 text-white shadow-xs"
-                                      : "text-slate-600 hover:text-slate-900"
-                                  }`}
-                                >
-                                  <List className="w-3.5 h-3.5 text-blue-400" />
-                                  <span>List</span>
-                                </button>
-                              </div>
-                            </div>
-
-                            {/* Category Filter Chips inside popover */}
-                            {categories.length > 0 && (
-                              <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-[8px] font-medium no-scrollbar">
-                                <button
-                                  type="button"
-                                  onClick={() => setCategoryFilter("ALL")}
-                                  className={`px-2.5 py-0.5 rounded-md border transition-colors cursor-pointer shrink-0 text-[12px] ${
-                                    categoryFilter === "ALL"
-                                      ? "bg-emerald-600 text-white border-emerald-600"
-                                      : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
-                                  }`}
-                                >
-                                  All Categories
-                                </button>
-                                {categories.slice(0, 8).map((cat) => (
-                                  <button
-                                    key={cat}
-                                    type="button"
-                                    onClick={() => setCategoryFilter(cat)}
-                                    className={`px-2.5 py-0.5 rounded-md border transition-colors cursor-pointer shrink-0 text-[12px] ${
-                                      categoryFilter === cat
-                                        ? "bg-emerald-600 text-white border-emerald-600"
-                                        : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
-                                    }`}
-                                  >
-                                    {cat}
-                                  </button>
-                                ))}
-                              </div>
-                            )}
-
-                            {/* Screen Protector Size Compatibility Banner if searching a mobile model (e.g. "Oppo A5") */}
-                            {(() => {
-                              const pMatches = getProtectorMatches(
-                                row.searchQuery,
-                              );
-                              if (pMatches.length === 0) return null;
-                              return (
-                                <div className="p-3 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-300 shadow-2xs space-y-2 animate-fadeIn">
-                                  <div className="flex items-center justify-between gap-2">
-                                    <div className="flex items-center gap-2">
-                                      <Sparkles className="w-4 h-4 text-emerald-600 shrink-0" />
-                                      <span className="text-xs font-bold text-emerald-950">
-                                        Compatible Screen Protector Size
-                                        {pMatches.length > 1 ? "s" : ""} for "
-                                        {row.searchQuery}":
-                                      </span>
-                                    </div>
-                                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-200">
-                                      {pMatches.length} Size Match
-                                      {pMatches.length > 1 ? "es" : ""}
-                                    </span>
-                                  </div>
-
-                                  <div className="space-y-1.5">
-                                    {pMatches.map((pMatch, pIdx) => (
-                                      <div
-                                        key={`${pMatch.protector.id}_${pMatch.model}_${pIdx}`}
-                                        className="p-2 rounded-lg bg-white border border-emerald-200 flex items-center justify-between gap-2"
-                                      >
-                                        <div className="flex items-center gap-2 flex-wrap min-w-0">
-                                          <span className="text-[11px] font-bold text-slate-500 uppercase">
-                                            Size:
-                                          </span>
-                                          <span className="font-mono font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded border border-slate-300 text-xs">
-                                            {pMatch.protector.name}
-                                          </span>
-                                          <span className="text-[10px] font-semibold text-emerald-800 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200">
-                                            {pMatch.brand} {pMatch.model}
-                                          </span>
-                                          <span className="text-xs font-bold text-emerald-700 font-mono">
-                                            {formatPKR(
-                                              pMatch.protector.defaultPrice ||
-                                                150,
-                                            )}
-                                          </span>
-                                        </div>
-
-                                        <button
-                                          type="button"
-                                          onClick={() =>
-                                            handleSelectProtectorForSale(
-                                              row.id,
-                                              pMatch,
-                                            )
-                                          }
-                                          className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] shadow-2xs transition-colors shrink-0 cursor-pointer flex items-center gap-1"
-                                          title="Select this protector size for the invoice"
-                                        >
-                                          <Plus className="w-3 h-3" />
-                                          <span>Add to Bill</span>
-                                        </button>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              );
-                            })()}
-
-                            {/* Products Container: Scrollable Blocks or List */}
-                            <div className="overflow-y-auto flex-1 pr-1 max-h-[340px]">
-                              {matchedProducts.length === 0 ? (
-                                <div className="p-8 text-center text-slate-400 space-y-1">
-                                  <Package className="w-8 h-8 mx-auto text-slate-300" />
-                                  <p className="text-xs font-semibold text-slate-700">
-                                    No products match "{row.searchQuery}"
-                                  </p>
-                                  <p className="text-[10px] text-slate-400">
-                                    Try typing a different alphabet, SKU number
-                                    or reset category filter.
-                                  </p>
-                                </div>
-                              ) : productViewMode === "blocks" ? (
-                                /* ============================================ */
-                                /* VIEW 1: GRID LAYOUT (RESPONSIVE CARDS)       */
-                                /* ============================================ */
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-2.5 pt-0.5">
-                                  {matchedProducts.map((p) => {
-                                    const isOut = p.currentStock <= 0;
-                                    return (
-                                      <button
-                                        key={p.id}
-                                        type="button"
-                                        disabled={isOut}
-                                        onClick={() =>
-                                          handleSelectProductForRow(row.id, p)
-                                        }
-                                        className={`w-full p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-2.5 group/card ${
-                                          isOut
-                                            ? "bg-slate-50 border-slate-200 opacity-40 cursor-not-allowed"
-                                            : "bg-white hover:bg-emerald-50/70 hover:border-emerald-400 border-slate-200 shadow-2xs hover:shadow-xs active:scale-[0.99]"
-                                        }`}
-                                      >
-                                        {/* Top: Product Name & Category */}
-                                        <div className="min-w-0 w-full space-y-1">
-                                          <div className="flex items-start justify-between gap-1.5">
-                                            <div className="text-lg font-bold tracking-wide text-slate-900 group-hover/card:text-emerald-950 leading-snug break-words line-clamp-2">
-                                              {p.name}
-                                            </div>
-                                            <span className="text-lg font-bold tracking-wide text-emerald-700 shrink-0">
-                                              {p.sellingPrice}
-                                            </span>
-                                          </div>
-                                          <div className="text-[10px] text-slate-500 font-mono flex items-center gap-1.5 flex-wrap">
-                                            <span className="px-1.5 py-0.2 bg-slate-100 rounded text-slate-700 font-bold">
-                                              SKU: {p.sku}
-                                            </span>
-                                            {p.category && (
-                                              <span className="px-1.5 py-0.2 bg-blue-50 text-blue-700 rounded font-semibold truncate max-w-[120px]">
-                                                {p.category}
-                                              </span>
-                                            )}
-                                          </div>
-                                        </div>
-
-                                        {/* Bottom: Stock Status & Quick Select Badge */}
-                                        <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-slate-100 w-full">
-                                          <span
-                                            className={`text-sm font-bold px-2 py-0.5 rounded-md ${
-                                              isOut
-                                                ? "bg-rose-100 text-rose-800"
-                                                : p.currentStock <= 5
-                                                  ? "bg-amber-100 text-amber-800"
-                                                  : "bg-emerald-100 text-emerald-800"
-                                            }`}
-                                          >
-                                            {isOut
-                                              ? "Out of stock"
-                                              : `${p.currentStock} ${p.unit}`}
-                                          </span>
-                                          <span className="px-2 py-0.5 rounded-md bg-emerald-600 group-hover/card:bg-emerald-700 text-white font-normal text-sm shadow-2xs">
-                                            + Add
-                                          </span>
-                                        </div>
-                                      </button>
-                                    );
-                                  })}
-                                </div>
-                              ) : (
-                                /* ============================================ */
-                                /* VIEW 2: STRUCTURED COMPACT LIST              */
-                                /* ============================================ */
-                                <div className="divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden bg-white">
-                                  {matchedProducts.map((p) => {
-                                    const isOut = p.currentStock <= 0;
-                                    return (
-                                      <div
-                                        key={p.id}
-                                        onClick={() => {
-                                          if (!isOut)
-                                            handleSelectProductForRow(
-                                              row.id,
-                                              p,
-                                            );
-                                        }}
-                                        className={`p-3 flex items-center justify-between gap-3 text-xs transition-colors ${
-                                          isOut
-                                            ? "opacity-40 bg-slate-50 cursor-not-allowed"
-                                            : "hover:bg-emerald-50/60 cursor-pointer group/row"
-                                        }`}
-                                      >
-                                        <div className="min-w-0 flex-1">
-                                          <div className="flex items-center gap-2 flex-wrap">
-                                            <span className="font-bold text-lg text-slate-900 group-hover/row:text-emerald-950 break-words tracking-wide">
-                                              {p.name}
-                                            </span>
-                                            <span className="px-1.5 py-0.2 bg-slate-100 rounded text-[10px] font-mono font-bold text-slate-600 shrink-0">
-                                              {p.sku}
-                                            </span>
-                                          </div>
-                                          <div className="text-[10px] text-slate-400 mt-1 flex items-center gap-2 flex-wrap">
-                                            <span className="font-semibold text-slate-500">
-                                              {p.category}
-                                            </span>
-                                            {p.barcode && (
-                                              <span>• BC: {p.barcode}</span>
-                                            )}
-                                          </div>
-                                        </div>
-
-                                        <div className="flex items-center gap-3 shrink-0">
-                                          <span
-                                            className={`text-md font-bold px-2 py-0.5 rounded-md ${
-                                              isOut
-                                                ? "bg-rose-100 text-rose-800"
-                                                : p.currentStock <= 5
-                                                  ? "bg-amber-100 text-amber-800"
-                                                  : "bg-emerald-100 text-emerald-800"
-                                            }`}
-                                          >
-                                            {isOut
-                                              ? "Out of stock"
-                                              : `${p.currentStock} ${p.unit}`}
-                                          </span>
-
-                                          <span className="font-bold text-emerald-700 text-lg min-w-[75px] text-right">
-                                            {p.sellingPrice}
-                                          </span>
-
-                                          <button
-                                            type="button"
-                                            disabled={isOut}
-                                            onClick={(e) => {
-                                              e.stopPropagation();
-                                              handleSelectProductForRow(
-                                                row.id,
-                                                p,
-                                              );
-                                            }}
-                                            className="px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-30 text-white font-normal text-sm transition-colors cursor-pointer"
-                                          >
-                                            + Add
-                                          </button>
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              )}
-                            </div>
-                          </div>
+                            }
+                            requestAnimationFrame(updatePopoverPosition);
+                          }}
+                          onChange={(e) => {
+                            const val = e.target.value;
+                            setRows((prev) =>
+                              prev.map((r) =>
+                                r.id === row.id
+                                  ? { ...r, searchQuery: val }
+                                  : r,
+                              ),
+                            );
+                            setActiveSearchRowId(row.id);
+                            requestAnimationFrame(updatePopoverPosition);
+                          }}
+                          placeholder="Type any alphabet (e.g. 'c', 'case', 'cable')..."
+                          className={`w-full pl-9 pr-8 py-2 rounded-md border text-xs font-semibold focus:outline-hidden focus:ring-2 focus:ring-slate-900 transition-all ${
+                            hasSelected
+                              ? "bg-emerald-50/70 border-emerald-300 text-slate-900"
+                              : "bg-white border-slate-300 text-slate-900 placeholder:text-slate-400"
+                          }`}
+                        />
+                        {hasSelected && (
+                          <button
+                            type="button"
+                            onClick={() => handleClearRowProduct(row.id)}
+                            title="Clear and search another product"
+                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-600 p-0.5 cursor-pointer"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
                         )}
                       </div>
                     </td>
@@ -1713,6 +1437,309 @@ export const RecordSalePage: React.FC<RecordSalePageProps> = ({
             />
           </div>
         </div>
+
+        {/* ========================================================= */}
+        {/* FLOATING PRODUCT SEARCH RESULTS CONTAINER (FULL WIDTH & HIGH Z-INDEX) */}
+        {/* ========================================================= */}
+        {activeSearchRowId && activeRow && (
+          <div
+            style={{ top: `${popoverTop ?? 110}px` }}
+            className="absolute inset-x-0 mx-2 sm:mx-4 z-[100] max-w-[calc(100%-1rem)] sm:max-w-[calc(100%-2rem)]"
+          >
+            <div className="w-full bg-white rounded-xl shadow-2xl border-2 border-slate-300 ring-4 ring-slate-900/10 p-3.5 sm:p-4 space-y-3 animate-fadeIn max-h-[520px] flex flex-col">
+              {/* Header: Row indicator, results count, Grid/List switch, Close button */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-200">
+                <div className="flex items-center gap-2 flex-wrap min-w-0">
+                  <span className="px-2 py-0.5 rounded-md bg-emerald-600 text-white text-xs font-black tracking-wide shrink-0">
+                    Row #{activeRowIndex + 1}
+                  </span>
+                  <span className="font-extrabold text-slate-900 text-xs sm:text-sm">
+                    {matchedProducts.length > 0
+                      ? `Found (${matchedProducts.length}) Products`
+                      : "No Products Found"}
+                  </span>
+                  {activeRow.searchQuery.trim() && (
+                    <span className="text-[11px] text-slate-500 truncate max-w-[200px]">
+                      matching "{activeRow.searchQuery}"
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 justify-between sm:justify-end">
+                  {/* View Mode Toggle: Grid vs List */}
+                  <div className="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleToggleProductViewMode("blocks")}
+                      className={`px-2.5 py-1 rounded text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                        productViewMode === "blocks"
+                          ? "bg-slate-900 text-white shadow-xs"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                      title="Show products in full width grid blocks"
+                    >
+                      <LayoutGrid className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Grid</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleToggleProductViewMode("list")}
+                      className={`px-2.5 py-1 rounded text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                        productViewMode === "list"
+                          ? "bg-slate-900 text-white shadow-xs"
+                          : "text-slate-600 hover:text-slate-900"
+                      }`}
+                      title="Show products in structured list view"
+                    >
+                      <List className="w-3.5 h-3.5 text-blue-400" />
+                      <span>List</span>
+                    </button>
+                  </div>
+
+                  {/* Close Popover button */}
+                  <button
+                    type="button"
+                    onClick={() => setActiveSearchRowId(null)}
+                    title="Close product search (Esc)"
+                    className="p-1.5 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-700 transition-colors cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Category Filter Chips */}
+              {categories.length > 0 && (
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs font-semibold no-scrollbar">
+                  <button
+                    type="button"
+                    onClick={() => setCategoryFilter("ALL")}
+                    className={`px-3 py-1 rounded-md border transition-colors cursor-pointer shrink-0 text-xs ${
+                      categoryFilter === "ALL"
+                        ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs font-bold"
+                        : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    All Categories
+                  </button>
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      type="button"
+                      onClick={() => setCategoryFilter(cat)}
+                      className={`px-3 py-1 rounded-md border transition-colors cursor-pointer shrink-0 text-xs ${
+                        categoryFilter === cat
+                          ? "bg-emerald-600 text-white border-emerald-600 shadow-2xs font-bold"
+                          : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                      }`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Screen Protector Size Compatibility Banner if searching model */}
+              {(() => {
+                const pMatches = getProtectorMatches(activeRow.searchQuery);
+                if (pMatches.length === 0) return null;
+                return (
+                  <div className="p-3 rounded-xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-300 shadow-2xs space-y-2 animate-fadeIn">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span className="text-xs font-bold text-emerald-950">
+                          Compatible Screen Protector Size{pMatches.length > 1 ? "s" : ""} for "{activeRow.searchQuery}":
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-200">
+                        {pMatches.length} Size Match{pMatches.length > 1 ? "es" : ""}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                      {pMatches.map((pMatch, pIdx) => (
+                        <div
+                          key={`${pMatch.protector.id}_${pMatch.model}_${pIdx}`}
+                          className="p-2.5 rounded-lg bg-white border border-emerald-200 flex items-center justify-between gap-2 shadow-2xs"
+                        >
+                          <div className="flex flex-col min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-mono font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded border border-slate-300 text-xs">
+                                {pMatch.protector.name}
+                              </span>
+                              <span className="text-xs font-bold text-emerald-700 font-mono">
+                                {formatPKR(pMatch.protector.defaultPrice || 150)}
+                              </span>
+                            </div>
+                            <span className="text-[10px] font-semibold text-slate-600 truncate mt-0.5">
+                              {pMatch.brand} {pMatch.model}
+                            </span>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => handleSelectProtectorForSale(activeRow.id, pMatch)}
+                            className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-2xs transition-colors shrink-0 cursor-pointer flex items-center gap-1"
+                            title="Select this protector size for the invoice"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>Add</span>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              {/* Scrollable Products Area: Grid Blocks or List */}
+              <div className="overflow-y-auto flex-1 pr-1 max-h-[380px]">
+                {matchedProducts.length === 0 ? (
+                  <div className="p-8 text-center text-slate-400 space-y-1">
+                    <Package className="w-8 h-8 mx-auto text-slate-300" />
+                    <p className="text-xs font-semibold text-slate-700">
+                      No products match "{activeRow.searchQuery}"
+                    </p>
+                    <p className="text-[10px] text-slate-400">
+                      Try typing a different alphabet, SKU number or reset category filter.
+                    </p>
+                  </div>
+                ) : productViewMode === "blocks" ? (
+                  /* FULL WIDTH GRID BLOCKS (Not congested, spacious responsive grid) */
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 pt-0.5">
+                    {matchedProducts.map((p) => {
+                      const isOut = p.currentStock <= 0;
+                      return (
+                        <button
+                          key={p.id}
+                          type="button"
+                          disabled={isOut}
+                          onClick={() => handleSelectProductForRow(activeRow.id, p)}
+                          className={`w-full p-3 sm:p-3.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between gap-3 group/card ${
+                            isOut
+                              ? "bg-slate-50 border-slate-200 opacity-40 cursor-not-allowed"
+                              : "bg-white hover:bg-emerald-50/70 hover:border-emerald-400 border-slate-200 shadow-2xs hover:shadow-md active:scale-[0.99]"
+                          }`}
+                        >
+                          {/* Top: Product Name & Price */}
+                          <div className="min-w-0 w-full space-y-1.5">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="text-sm sm:text-base font-bold text-slate-900 group-hover/card:text-emerald-950 leading-snug break-words line-clamp-2">
+                                {p.name}
+                              </div>
+                              <span className="text-sm sm:text-base font-black text-emerald-700 shrink-0 font-mono">
+                                {formatPKR(p.sellingPrice)}
+                              </span>
+                            </div>
+                            <div className="text-[11px] text-slate-500 font-mono flex items-center gap-1.5 flex-wrap">
+                              <span className="px-1.5 py-0.5 bg-slate-100 rounded text-slate-700 font-bold">
+                                SKU: {p.sku}
+                              </span>
+                              {p.category && (
+                                <span className="px-1.5 py-0.5 bg-blue-50 text-blue-700 rounded font-semibold truncate max-w-[130px]">
+                                  {p.category}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Bottom: Stock Status & Quick Select Badge */}
+                          <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100 w-full">
+                            <span
+                              className={`text-xs font-bold px-2 py-0.5 rounded-md ${
+                                isOut
+                                  ? "bg-rose-100 text-rose-800"
+                                  : p.currentStock <= 5
+                                    ? "bg-amber-100 text-amber-800"
+                                    : "bg-emerald-100 text-emerald-800"
+                              }`}
+                            >
+                              {isOut ? "Out of stock" : `${p.currentStock} ${p.unit}`}
+                            </span>
+                            <span className="px-3 py-1 rounded-md bg-emerald-600 group-hover/card:bg-emerald-700 text-white font-bold text-xs shadow-2xs flex items-center gap-1">
+                              <Plus className="w-3 h-3" />
+                              <span>Add</span>
+                            </span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  /* FULL WIDTH STRUCTURED LIST VIEW */
+                  <div className="divide-y divide-slate-100 border border-slate-200 rounded-xl overflow-hidden bg-white">
+                    {matchedProducts.map((p) => {
+                      const isOut = p.currentStock <= 0;
+                      return (
+                        <div
+                          key={p.id}
+                          onClick={() => {
+                            if (!isOut) handleSelectProductForRow(activeRow.id, p);
+                          }}
+                          className={`p-2.5 sm:p-3 flex items-center justify-between gap-3 text-xs transition-colors ${
+                            isOut
+                              ? "opacity-40 bg-slate-50 cursor-not-allowed"
+                              : "hover:bg-emerald-50/60 cursor-pointer group/row"
+                          }`}
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-bold text-sm sm:text-base text-slate-900 group-hover/row:text-emerald-950 break-words tracking-wide">
+                                {p.name}
+                              </span>
+                              <span className="px-1.5 py-0.5 bg-slate-100 rounded text-[10px] font-mono font-bold text-slate-600 shrink-0">
+                                {p.sku}
+                              </span>
+                            </div>
+                            <div className="text-[11px] text-slate-400 mt-0.5 flex items-center gap-2 flex-wrap">
+                              {p.category && (
+                                <span className="font-semibold text-slate-500">
+                                  {p.category}
+                                </span>
+                              )}
+                              {p.barcode && <span>• BC: {p.barcode}</span>}
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                            <span
+                              className={`text-xs font-bold px-2 py-0.5 rounded-md ${
+                                isOut
+                                  ? "bg-rose-100 text-rose-800"
+                                  : p.currentStock <= 5
+                                    ? "bg-amber-100 text-amber-800"
+                                    : "bg-emerald-100 text-emerald-800"
+                              }`}
+                            >
+                              {isOut ? "Out of stock" : `${p.currentStock} ${p.unit}`}
+                            </span>
+
+                            <span className="font-bold text-emerald-700 text-sm sm:text-base min-w-[75px] text-right font-mono">
+                              {formatPKR(p.sellingPrice)}
+                            </span>
+
+                            <button
+                              type="button"
+                              disabled={isOut}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleSelectProductForRow(activeRow.id, p);
+                              }}
+                              className="px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:opacity-30 text-white font-bold text-xs transition-colors cursor-pointer"
+                            >
+                              + Add
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* ========================================================= */}

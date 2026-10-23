@@ -562,12 +562,12 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
   return (
     <div className="space-y-6">
       {/* Top Header */}
-      <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-4 sm:p-6 flex flex-col md:flex-row md:items-center justify-between gap-3.5 sm:gap-4">
         <div>
           <div className="flex items-center gap-2.5">
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
                   EP & JC Services
                 </h1>
                 {isWorker && (
@@ -580,11 +580,11 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
           <button
             id="btn-export-epjc-csv"
             onClick={exportDailyCSV}
-            className="px-3 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="flex-1 sm:flex-initial justify-center px-3 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
             title="Export Daily Records to CSV"
           >
             <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
@@ -594,7 +594,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
           <button
             id="btn-record-epjc-tx"
             onClick={handleOpenAddTx}
-            className="px-3.5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="flex-1 sm:flex-initial justify-center px-3.5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
           >
             <ArrowUpRight className="w-3.5 h-3.5" />
             Record Transfer / Withdraw
@@ -603,7 +603,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
           <button
             id="btn-add-epjc-daily-record"
             onClick={handleOpenAddDaily}
-            className="px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="w-full sm:w-auto justify-center px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
           >
             <Plus className="w-4 h-4" />
             New Daily Record
@@ -613,13 +613,13 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
 
       {/* Worker Present Day Focus Banner */}
       {isWorker && (
-        <div className="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-200 rounded-xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="bg-gradient-to-r from-emerald-500/10 via-emerald-500/5 to-transparent border border-emerald-200 rounded-xl p-3.5 sm:p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold shadow-xs shrink-0">
               <Calendar className="w-5 h-5 text-white" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-sm font-bold text-slate-900">
                   Today's EP & JC Terminal
                 </span>
@@ -633,7 +633,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
             <span className="text-xs font-semibold bg-emerald-100 text-emerald-800 px-3 py-1.5 rounded-lg border border-emerald-200">
               {todayMetrics.txCount} Transaction
               {todayMetrics.txCount !== 1 ? "s" : ""} Today
@@ -643,18 +643,20 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
       )}
 
       {/* Primary Highlights: Today's / Active Day's Full Opening vs Closing Reconciliation */}
-      <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-5">
+      <div className="bg-white rounded-xl shadow-xs border border-slate-200 p-4 sm:p-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-emerald-600" />
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              Focused Daily Sheet
-            </span>
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5">
+              <Calendar className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 whitespace-nowrap">
+                Focused Daily Sheet
+              </span>
+            </div>
             <select
               id="select-epjc-focus-date"
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 rounded-md px-2.5 py-1 focus:ring-1 focus:ring-emerald-500"
+              className="bg-slate-50 border border-slate-200 text-xs font-semibold text-slate-800 rounded-md px-2.5 py-1 focus:ring-1 focus:ring-emerald-500 max-w-full"
             >
               {normalizedRecords.map((r) => (
                 <option key={r.id} value={r.date}>
@@ -670,7 +672,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
           </div>
 
           {activeDayRecord ? (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <button
                 id="btn-edit-focused-day"
                 onClick={() => handleOpenEditDaily(activeDayRecord)}
@@ -691,17 +693,16 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
             </div>
           ) : (
             <div className="text-xs text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md border border-amber-200 flex items-center gap-1.5 font-medium">
-              <AlertCircle className="w-3.5 h-3.5 text-amber-600" />
-              No record for {selectedDate}. Click "New Daily Record" to set
-              Opening/Closing.
+              <AlertCircle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+              <span>No record for {selectedDate}. Click "New Daily Record" to set Opening/Closing.</span>
             </div>
           )}
         </div>
 
         {activeDayRecord ? (
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
             {/* OPENING BOX */}
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 sm:p-4 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold uppercase tracking-wider text-blue-800 flex items-center gap-1.5">
@@ -748,10 +749,10 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                             className="flex justify-between items-center py-1 border-b border-indigo-100 text-indigo-950 bg-indigo-50/50 px-1.5 rounded"
                           >
                             <span className="font-semibold flex items-center gap-1 text-[11px] text-indigo-900">
-                              <Building2 className="w-3 h-3 text-indigo-600" />
-                              {ca.name || "Custom Bank"} (Opening):
+                              <Building2 className="w-3 h-3 text-indigo-600 shrink-0" />
+                              <span className="truncate">{ca.name || "Custom Bank"}</span> (Opening):
                             </span>
-                            <span className="font-bold font-mono text-indigo-900">
+                            <span className="font-bold font-mono text-indigo-900 shrink-0">
                               {formatPKR(ca.openingBalance)}
                             </span>
                           </div>
@@ -761,7 +762,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                   {Number(activeDayRecord.extraAddition) > 0 && (
                     <div className="flex justify-between items-center py-1 border-b border-indigo-100 text-indigo-900 bg-indigo-50/60 px-1.5 rounded">
                       <span className="font-medium flex items-center gap-1">
-                        <PlusCircle className="w-3 h-3 text-indigo-600" />
+                        <PlusCircle className="w-3 h-3 text-indigo-600 shrink-0" />
                         Extra Addition (Reload):
                       </span>
                       <span className="font-bold font-mono text-indigo-700">
@@ -776,14 +777,14 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                 <span className="text-xs font-bold text-slate-700">
                   Total Opening:
                 </span>
-                <span className="text-base font-bold font-mono text-blue-900">
+                <span className="text-base sm:text-lg font-bold font-mono text-blue-900">
                   {formatPKR(activeDayRecord.totalOpening)}
                 </span>
               </div>
             </div>
 
             {/* CLOSING BOX */}
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 flex flex-col justify-between">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 sm:p-4 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-xs font-bold uppercase tracking-wider text-emerald-800 flex items-center gap-1.5">
@@ -830,10 +831,10 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                             className="flex justify-between items-center py-1 border-b border-indigo-100 text-indigo-950 bg-indigo-50/50 px-1.5 rounded"
                           >
                             <span className="font-semibold flex items-center gap-1 text-[11px] text-indigo-900">
-                              <Building2 className="w-3 h-3 text-indigo-600" />
-                              {ca.name || "Custom Bank"} (Closing):
+                              <Building2 className="w-3 h-3 text-indigo-600 shrink-0" />
+                              <span className="truncate">{ca.name || "Custom Bank"}</span> (Closing):
                             </span>
-                            <span className="font-bold font-mono text-indigo-900">
+                            <span className="font-bold font-mono text-indigo-900 shrink-0">
                               {formatPKR(ca.closingBalance)}
                             </span>
                           </div>
@@ -843,7 +844,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                   {Number(activeDayRecord.epJcExpense) > 0 && (
                     <div className="flex justify-between items-center py-1 border-b border-rose-100 text-rose-900 bg-rose-50/60 px-1.5 rounded">
                       <span className="font-medium flex items-center gap-1">
-                        <Receipt className="w-3 h-3 text-rose-600" />
+                        <Receipt className="w-3 h-3 text-rose-600 shrink-0" />
                         EP/JC Expense:
                       </span>
                       <span className="font-bold font-mono text-rose-700">
@@ -858,7 +859,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                 <span className="text-xs font-bold text-slate-700">
                   Total Closing:
                 </span>
-                <span className="text-base font-bold font-mono text-emerald-900">
+                <span className="text-base sm:text-lg font-bold font-mono text-emerald-900">
                   {formatPKR(activeDayRecord.totalClosing)}
                 </span>
               </div>
@@ -866,7 +867,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
 
             {/* CLOSING TOTAL COMPARISON (REQUIRED GREEN PROFIT / RED LOSS) */}
             <div
-              className={`rounded-xl p-5 border flex flex-col justify-between transition-all ${
+              className={`rounded-xl p-4 sm:p-5 border flex flex-col justify-between transition-all md:col-span-2 lg:col-span-1 ${
                 activeDayRecord.netDifference > 0
                   ? "bg-emerald-50/90 border-emerald-300 text-emerald-950 shadow-xs"
                   : activeDayRecord.netDifference < 0
@@ -968,7 +969,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
             </div>
           </div>
         ) : (
-          <div className="py-8 text-center bg-slate-50/50 rounded-xl border border-dashed border-slate-200 mt-4">
+          <div className="py-8 text-center bg-slate-50/50 rounded-xl border border-dashed border-slate-200 mt-4 px-4">
             <Coins className="w-8 h-8 text-slate-400 mx-auto mb-2" />
             <p className="text-sm font-semibold text-slate-700">
               No Daily Record For {selectedDate}
@@ -991,23 +992,23 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
 
       {/* Secondary Metrics: Overview Stats (Worker Present Day vs Admin All-Time) */}
       {isWorker ? (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
           {/* Today's Profit / Loss */}
-          <div className="bg-white rounded-xl p-4 border border-emerald-200 shadow-xs">
+          <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-emerald-200 shadow-xs">
             <div className="flex items-center justify-between text-xs font-semibold text-emerald-800 mb-1">
-              <span>Today's Net Variance</span>
+              <span className="truncate">Today's Variance</span>
               {todayMetrics.hasRecord ? (
                 todayMetrics.netDifference >= 0 ? (
-                  <TrendingUp className="w-4 h-4 text-emerald-600" />
+                  <TrendingUp className="w-4 h-4 text-emerald-600 shrink-0" />
                 ) : (
-                  <TrendingDown className="w-4 h-4 text-red-600" />
+                  <TrendingDown className="w-4 h-4 text-red-600 shrink-0" />
                 )
               ) : (
-                <Calendar className="w-4 h-4 text-amber-500" />
+                <Calendar className="w-4 h-4 text-amber-500 shrink-0" />
               )}
             </div>
             <div
-              className={`text-lg font-black font-mono ${
+              className={`text-base sm:text-lg font-black font-mono truncate ${
                 todayMetrics.hasRecord
                   ? todayMetrics.netDifference >= 0
                     ? "text-emerald-600"
@@ -1019,7 +1020,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                 ? `${todayMetrics.netDifference >= 0 ? "+" : ""}${formatPKR(todayMetrics.netDifference)}`
                 : "Pending Sheet"}
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
+            <p className="text-[10px] sm:text-[11px] text-slate-500 mt-1 line-clamp-1">
               {todayMetrics.hasRecord
                 ? `Opening ${formatPKR(todayMetrics.totalOpening)} • Closing ${formatPKR(todayMetrics.totalClosing)}`
                 : "Reconcile today's sheet above"}
@@ -1027,60 +1028,60 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
           </div>
 
           {/* Today's Transfer (Cash In) */}
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+          <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-xs">
             <div className="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1">
-              <span>Today's Transfer (In)</span>
-              <ArrowUpRight className="w-4 h-4 text-blue-600" />
+              <span className="truncate">Transfer (In)</span>
+              <ArrowUpRight className="w-4 h-4 text-blue-600 shrink-0" />
             </div>
-            <div className="text-lg font-black font-mono text-slate-900">
+            <div className="text-base sm:text-lg font-black font-mono text-slate-900 truncate">
               {formatPKR(todayMetrics.transferVolume)}
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
+            <p className="text-[10px] sm:text-[11px] text-slate-500 mt-1 truncate">
               Sent to customers today
             </p>
           </div>
 
           {/* Today's Withdraw (Cash Out) */}
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+          <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-xs">
             <div className="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1">
-              <span>Today's Withdraw (Out)</span>
-              <ArrowDownLeft className="w-4 h-4 text-purple-600" />
+              <span className="truncate">Withdraw (Out)</span>
+              <ArrowDownLeft className="w-4 h-4 text-purple-600 shrink-0" />
             </div>
-            <div className="text-lg font-black font-mono text-slate-900">
+            <div className="text-base sm:text-lg font-black font-mono text-slate-900 truncate">
               {formatPKR(todayMetrics.withdrawVolume)}
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
-              Cash paid out of drawer today
+            <p className="text-[10px] sm:text-[11px] text-slate-500 mt-1 truncate">
+              Cash paid out today
             </p>
           </div>
 
           {/* Today's Commission */}
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+          <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-xs">
             <div className="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1">
-              <span>Today's Commission</span>
-              <DollarSign className="w-4 h-4 text-emerald-600" />
+              <span className="truncate">Commission</span>
+              <DollarSign className="w-4 h-4 text-emerald-600 shrink-0" />
             </div>
-            <div className="text-lg font-black font-mono text-emerald-600">
+            <div className="text-base sm:text-lg font-black font-mono text-emerald-600 truncate">
               {formatPKR(todayMetrics.commission)}
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
-              Earned on {todayMetrics.txCount} today's transactions
+            <p className="text-[10px] sm:text-[11px] text-slate-500 mt-1 truncate">
+              Earned on {todayMetrics.txCount} txs today
             </p>
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+          <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-xs">
             <div className="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1">
-              <span>Overall Net Variance</span>
+              <span className="truncate">Net Variance</span>
               {summaryMetrics.netVariance >= 0 ? (
-                <TrendingUp className="w-4 h-4 text-emerald-600" />
+                <TrendingUp className="w-4 h-4 text-emerald-600 shrink-0" />
               ) : (
-                <TrendingDown className="w-4 h-4 text-red-600" />
+                <TrendingDown className="w-4 h-4 text-red-600 shrink-0" />
               )}
             </div>
             <div
-              className={`text-lg font-bold font-mono ${
+              className={`text-base sm:text-lg font-bold font-mono truncate ${
                 summaryMetrics.netVariance >= 0
                   ? "text-emerald-600"
                   : "text-red-600"
@@ -1089,48 +1090,48 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
               {summaryMetrics.netVariance >= 0 ? "+" : ""}
               {formatPKR(summaryMetrics.netVariance)}
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
-              {summaryMetrics.netProfitDays} Profit days •{" "}
+            <p className="text-[10px] sm:text-[11px] text-slate-500 mt-1 truncate">
+              {summaryMetrics.netProfitDays} Profit •{" "}
               {summaryMetrics.netLossDays} Loss days
             </p>
           </div>
 
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+          <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-xs">
             <div className="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1">
-              <span>Transfer (Cash In) Vol.</span>
-              <ArrowUpRight className="w-4 h-4 text-blue-600" />
+              <span className="truncate">Transfer (In) Vol.</span>
+              <ArrowUpRight className="w-4 h-4 text-blue-600 shrink-0" />
             </div>
-            <div className="text-lg font-bold font-mono text-slate-900">
+            <div className="text-base sm:text-lg font-bold font-mono text-slate-900 truncate">
               {formatPKR(summaryMetrics.transferVolume)}
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
-              Sent to customer EP/JC accounts
+            <p className="text-[10px] sm:text-[11px] text-slate-500 mt-1 truncate">
+              Sent to customer accounts
             </p>
           </div>
 
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+          <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-xs">
             <div className="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1">
-              <span>Withdraw (Cash Out) Vol.</span>
-              <ArrowDownLeft className="w-4 h-4 text-purple-600" />
+              <span className="truncate">Withdraw (Out) Vol.</span>
+              <ArrowDownLeft className="w-4 h-4 text-purple-600 shrink-0" />
             </div>
-            <div className="text-lg font-bold font-mono text-slate-900">
+            <div className="text-base sm:text-lg font-bold font-mono text-slate-900 truncate">
               {formatPKR(summaryMetrics.withdrawVolume)}
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
-              Cash paid out from shop drawer
+            <p className="text-[10px] sm:text-[11px] text-slate-500 mt-1 truncate">
+              Cash paid out from drawer
             </p>
           </div>
 
-          <div className="bg-white rounded-xl p-4 border border-slate-200 shadow-xs">
+          <div className="bg-white rounded-xl p-3.5 sm:p-4 border border-slate-200 shadow-xs">
             <div className="flex items-center justify-between text-xs font-semibold text-slate-500 mb-1">
-              <span>Commission Earned</span>
-              <DollarSign className="w-4 h-4 text-emerald-600" />
+              <span className="truncate">Commission Earned</span>
+              <DollarSign className="w-4 h-4 text-emerald-600 shrink-0" />
             </div>
-            <div className="text-lg font-bold font-mono text-emerald-600">
+            <div className="text-base sm:text-lg font-bold font-mono text-emerald-600 truncate">
               {formatPKR(summaryMetrics.totalCommission)}
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
-              Total service commission fees
+            <p className="text-[10px] sm:text-[11px] text-slate-500 mt-1 truncate">
+              Total service commissions
             </p>
           </div>
         </div>
@@ -1139,18 +1140,18 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
       {/* Main Content Area: View Selector Tabs */}
       <div className="bg-white rounded-xl shadow-xs border border-slate-200 overflow-hidden">
         {/* Navigation bar between Daily Records and Transactions */}
-        <div className="flex items-center justify-between border-b border-slate-200 px-6 pt-3 bg-slate-50/50">
-          <div className="flex space-x-2">
+        <div className="border-b border-slate-200 px-3 sm:px-6 pt-2 bg-slate-50/50 overflow-x-auto scrollbar-none">
+          <div className="flex space-x-1 sm:space-x-2 min-w-max">
             <button
               id="tab-view-daily-records"
               onClick={() => setViewMode("DAILY_RECORDS")}
-              className={`py-3 px-4 text-xs font-bold border-b-2 transition-colors cursor-pointer flex items-center gap-2 ${
+              className={`py-2.5 sm:py-3 px-3 sm:px-4 text-xs font-bold border-b-2 transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap ${
                 viewMode === "DAILY_RECORDS"
                   ? "border-slate-900 text-slate-900"
                   : "border-transparent text-slate-500 hover:text-slate-800"
               }`}
             >
-              <Calendar className="w-4 h-4 text-emerald-600" />
+              <Calendar className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>Daily Opening & Closing Register</span>
               <span className="bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full font-bold">
                 {records.length}
@@ -1160,13 +1161,13 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
             <button
               id="tab-view-transactions"
               onClick={() => setViewMode("TRANSACTIONS")}
-              className={`py-3 px-4 text-xs font-bold border-b-2 transition-colors cursor-pointer flex items-center gap-2 ${
+              className={`py-2.5 sm:py-3 px-3 sm:px-4 text-xs font-bold border-b-2 transition-colors cursor-pointer flex items-center gap-2 whitespace-nowrap ${
                 viewMode === "TRANSACTIONS"
                   ? "border-slate-900 text-slate-900"
                   : "border-transparent text-slate-500 hover:text-slate-800"
               }`}
             >
-              <Smartphone className="w-4 h-4 text-emerald-600" />
+              <Smartphone className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>Cash Transfer & Withdraw Ledger</span>
               <span className="bg-slate-200 text-slate-700 text-[10px] px-1.5 py-0.5 rounded-full font-bold">
                 {transactions.length}
@@ -1180,7 +1181,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
           <div>
             {/* Administrator Period Balances Focus Bar (Showing EP & JC Opening, Closing, Profit for Date Range) */}
             {!isWorker && adminPeriodStats && (
-              <div className="p-4 bg-blue-50/60 border-b border-blue-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="p-3.5 sm:p-4 bg-blue-50/60 border-b border-blue-200 flex flex-col lg:flex-row lg:items-center justify-between gap-3 sm:gap-4">
                 <div className="flex items-center gap-3">
                   <div className="p-2.5 rounded-lg bg-blue-600 text-white font-bold shrink-0">
                     <Calendar className="w-5 h-5 text-white" />
@@ -1203,18 +1204,17 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                       )}
                     </div>
                     <p className="text-xs text-slate-500 mt-0.5">
-                      Cumulative opening &amp; closing balances and
-                      reconciliation net profit / loss for selected date range
+                      Cumulative opening &amp; closing balances and reconciliation net profit / loss for selected date range
                     </p>
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3 text-xs font-mono">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 w-full lg:w-auto text-xs font-mono">
                   <div className="bg-white px-3 py-1.5 rounded-lg border border-blue-200 shadow-2xs">
                     <span className="text-[10px] font-sans text-slate-500 block">
                       Period Opening:
                     </span>
-                    <span className="font-bold text-slate-900">
+                    <span className="font-bold text-slate-900 truncate block">
                       {formatPKR(adminPeriodStats.totalOpening)}
                     </span>
                   </div>
@@ -1223,13 +1223,13 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                     <span className="text-[10px] font-sans text-slate-500 block">
                       Period Closing:
                     </span>
-                    <span className="font-bold text-slate-900">
+                    <span className="font-bold text-slate-900 truncate block">
                       {formatPKR(adminPeriodStats.totalClosing)}
                     </span>
                   </div>
 
                   <div
-                    className={`bg-white px-3 py-1.5 rounded-lg border shadow-2xs ${
+                    className={`col-span-2 sm:col-span-1 bg-white px-3 py-1.5 rounded-lg border shadow-2xs ${
                       adminPeriodStats.isProfit
                         ? "border-emerald-300"
                         : adminPeriodStats.isLoss
@@ -1241,7 +1241,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                       Period Profit/Loss:
                     </span>
                     <span
-                      className={`font-black ${
+                      className={`font-black truncate block ${
                         adminPeriodStats.isProfit
                           ? "text-emerald-700"
                           : adminPeriodStats.isLoss
@@ -1257,10 +1257,10 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
               </div>
             )}
 
-            <div className="p-4 border-b border-slate-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 bg-slate-50/50">
-              <div className="flex items-center gap-2 flex-wrap">
+            <div className="p-3.5 sm:p-4 border-b border-slate-100 flex flex-col xl:flex-row xl:items-center justify-between gap-3 bg-slate-50/50">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap w-full xl:w-auto">
                 <span className="text-xs font-semibold text-slate-500 flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5 text-slate-500" />
+                  <Calendar className="w-3.5 h-3.5 text-slate-500 shrink-0" />
                   <span>Date Range:</span>
                 </span>
 
@@ -1274,7 +1274,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                     setDailyFilter("TODAY");
                     setRecordsPage(1);
                   }}
-                  className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer ${
                     dailyFilter === "TODAY"
                       ? "bg-emerald-600 text-white shadow-xs font-bold"
                       : "bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200"
@@ -1290,12 +1290,12 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                   <span>Today</span>
                 </button>
 
-                {/* Preset: 8 Days (As requested by user: "So If I want to check only 8 Days Data, I Can use it") */}
+                {/* Preset: 8 Days */}
                 <button
                   type="button"
                   id="btn-epjc-filter-8days"
                   onClick={() => handleApplyPresetDays(8)}
-                  className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer ${
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer ${
                     dailyFilter === "RANGE" &&
                     startDate === getDateNDaysAgo(8) &&
                     endDate === todayStr
@@ -1304,7 +1304,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                   }`}
                   title="Filter last 8 days of records"
                 >
-                  <Clock className="w-3 h-3 text-current" />
+                  <Clock className="w-3 h-3 text-current shrink-0" />
                   <span>Last 8 Days</span>
                 </button>
 
@@ -1330,17 +1330,17 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                   type="button"
                   id="btn-epjc-filter-all"
                   onClick={handleClearDateRange}
-                  className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
+                  className={`px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
                     dailyFilter === "ALL" && !startDate && !endDate
                       ? "bg-slate-900 text-white shadow-xs font-bold"
                       : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-100"
                   }`}
                 >
-                  All History ({records.length})
+                  All ({records.length})
                 </button>
 
                 {/* Custom Date Range Pickers (From Date & To Date) */}
-                <div className="flex items-center gap-2 pl-2 sm:border-l sm:border-slate-200 flex-wrap">
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap w-full sm:w-auto pt-1 sm:pt-0 sm:pl-2 sm:border-l sm:border-slate-200">
                   <div className="flex items-center gap-1 text-xs">
                     <span className="font-semibold text-slate-500 whitespace-nowrap">
                       From:
@@ -1380,7 +1380,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                       type="button"
                       id="btn-epjc-clear-range"
                       onClick={handleClearDateRange}
-                      className="text-xs font-semibold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100/80 px-2.5 py-1 rounded-md border border-rose-200/80 flex items-center gap-1 cursor-pointer transition-colors"
+                      className="text-xs font-semibold text-rose-600 hover:text-rose-800 bg-rose-50 hover:bg-rose-100/80 px-2 py-1 rounded-md border border-rose-200/80 flex items-center gap-1 cursor-pointer transition-colors"
                       title="Clear date range"
                     >
                       <RotateCcw className="w-3 h-3" />
@@ -1392,29 +1392,28 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
 
               <button
                 onClick={handleOpenAddDaily}
-                className="px-3.5 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition-colors flex items-center gap-1.5 cursor-pointer self-start xl:self-auto shrink-0"
+                className="w-full sm:w-auto justify-center px-3.5 py-2 bg-slate-900 text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
               >
                 <Plus className="w-3.5 h-3.5 text-emerald-400" />
                 <span>Add Daily Record</span>
               </button>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-base">
+            <div className="overflow-x-auto scrollbar-thin">
+              <table className="w-full text-left border-collapse text-xs sm:text-sm min-w-[860px]">
                 <thead>
-                  <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-800 font-bold uppercase tracking-wider text-sm">
-                    <th className="py-4 px-4">Date</th>
-                    <th className="py-4 px-3">EP &amp; JC O.</th>
-                    <th className="py-4 px-3">Cash O.</th>
-                    <th className="py-4 px-3">Ext</th>
-                    <th className="py-4 px-3">Total O.</th>
-                    <th className="py-4 px-3">EP &amp; JC C.</th>
-                    <th className="py-4 px-3">Cash C.</th>
-                    {/* Crucial requirement: In Closing Total show Green with Profit, or Red with Loss */}
-                    <th className="py-4 px-3">EXP</th>
-                    <th className="py-4 px-3">Total C.</th>
-                    <th className="py-4 px-3">Net</th>
-                    <th className="py-4 px-4 text-right">Actions</th>
+                  <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-800 font-bold uppercase tracking-wider text-[11px] sm:text-xs">
+                    <th className="py-3 px-3 sm:px-4">Date</th>
+                    <th className="py-3 px-2 sm:px-3">EP &amp; JC O.</th>
+                    <th className="py-3 px-2 sm:px-3">Cash O.</th>
+                    <th className="py-3 px-2 sm:px-3">Ext</th>
+                    <th className="py-3 px-2 sm:px-3">Total O.</th>
+                    <th className="py-3 px-2 sm:px-3">EP &amp; JC C.</th>
+                    <th className="py-3 px-2 sm:px-3">Cash C.</th>
+                    <th className="py-3 px-2 sm:px-3">EXP</th>
+                    <th className="py-3 px-2 sm:px-3">Total C.</th>
+                    <th className="py-3 px-2 sm:px-3">Net</th>
+                    <th className="py-3 px-3 sm:px-4 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -1650,10 +1649,10 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
         {viewMode === "TRANSACTIONS" && (
           <div>
             {/* Filter controls */}
-            <div className="p-4 border-b border-slate-100 bg-slate-50/40 flex flex-col md:flex-row md:items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-2.5">
+            <div className="p-3.5 sm:p-4 border-b border-slate-100 bg-slate-50/40 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 w-full lg:w-auto">
                 {/* Search */}
-                <div className="relative">
+                <div className="relative w-full sm:w-56">
                   <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
                     type="text"
@@ -1663,7 +1662,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                       setTxSearch(e.target.value);
                       setTxPage(1);
                     }}
-                    className="pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg text-slate-900 focus:ring-1 focus:ring-emerald-500 w-52"
+                    className="pl-8 pr-3 py-1.5 text-xs bg-white border border-slate-300 rounded-lg text-slate-900 focus:ring-1 focus:ring-emerald-500 w-full"
                   />
                 </div>
 
@@ -1675,7 +1674,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                       setTxDateFilter(todayStr);
                       setTxPage(1);
                     }}
-                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer ${
+                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors flex items-center gap-1 cursor-pointer whitespace-nowrap ${
                       txDateFilter === todayStr
                         ? "bg-emerald-600 text-white font-bold"
                         : "text-slate-600 hover:text-slate-900"
@@ -1692,7 +1691,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                       setTxDateFilter("ALL");
                       setTxPage(1);
                     }}
-                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer ${
+                    className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
                       txDateFilter === "ALL"
                         ? "bg-slate-900 text-white font-bold"
                         : "text-slate-600 hover:text-slate-900"
@@ -1709,7 +1708,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                     setServiceFilter(e.target.value as any);
                     setTxPage(1);
                   }}
-                  className="bg-white border border-slate-300 text-xs text-slate-700 rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500"
+                  className="bg-white border border-slate-300 text-xs text-slate-700 rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500 flex-1 sm:flex-initial"
                 >
                   <option value="ALL">All Services (EP & JC)</option>
                   <option value="EASYPAISA">EasyPaisa (EP)</option>
@@ -1723,7 +1722,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                     setTypeFilter(e.target.value as any);
                     setTxPage(1);
                   }}
-                  className="bg-white border border-slate-300 text-xs text-slate-700 rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500"
+                  className="bg-white border border-slate-300 text-xs text-slate-700 rounded-lg px-2.5 py-1.5 focus:ring-1 focus:ring-emerald-500 flex-1 sm:flex-initial"
                 >
                   <option value="ALL">All Actions</option>
                   <option value="TRANSFER">Transfer (Cash In)</option>
@@ -1733,26 +1732,26 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
 
               <button
                 onClick={handleOpenAddTx}
-                className="px-3.5 py-2 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
+                className="w-full sm:w-auto justify-center px-3.5 py-2 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition-colors flex items-center gap-1.5 cursor-pointer shrink-0"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>New Transaction</span>
               </button>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-base">
+            <div className="overflow-x-auto scrollbar-thin">
+              <table className="w-full text-left border-collapse text-xs sm:text-sm min-w-[780px]">
                 <thead>
-                  <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-800 font-bold uppercase tracking-wider text-sm">
-                    <th className="py-4 px-4">Date & Time</th>
-                    <th className="py-4 px-3">Service</th>
-                    <th className="py-4 px-3">Type</th>
-                    <th className="py-4 px-3">Customer</th>
-                    <th className="py-4 px-3">Amount</th>
-                    <th className="py-4 px-3">Fee / Comm.</th>
-                    <th className="py-4 px-3">TRX ID / TID</th>
-                    <th className="py-4 px-3">Notes</th>
-                    <th className="py-4 px-4 text-right">Actions</th>
+                  <tr className="bg-slate-50/90 border-b border-slate-200 text-slate-800 font-bold uppercase tracking-wider text-[11px] sm:text-xs">
+                    <th className="py-3 px-3 sm:px-4">Date & Time</th>
+                    <th className="py-3 px-2 sm:px-3">Service</th>
+                    <th className="py-3 px-2 sm:px-3">Type</th>
+                    <th className="py-3 px-2 sm:px-3">Customer</th>
+                    <th className="py-3 px-2 sm:px-3">Amount</th>
+                    <th className="py-3 px-2 sm:px-3">Fee / Comm.</th>
+                    <th className="py-3 px-2 sm:px-3">TRX ID / TID</th>
+                    <th className="py-3 px-2 sm:px-3">Notes</th>
+                    <th className="py-3 px-3 sm:px-4 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -1922,8 +1921,8 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
 
       {/* Delete Confirmation Modal for Daily Record */}
       {recordToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 animate-in zoom-in-95 duration-150">
             <div className="flex items-center gap-3 text-rose-600 mb-3">
               <div className="w-10 h-10 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center shrink-0">
                 <Trash2 className="w-5 h-5 text-rose-600" />
@@ -1978,13 +1977,13 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
               </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-end gap-2.5">
+            <div className="mt-6 flex flex-col-reverse sm:flex-row items-center justify-end gap-2 sm:gap-2.5">
               <button
                 id="btn-cancel-delete-daily-record"
                 type="button"
                 onClick={() => setRecordToDelete(null)}
                 disabled={isDeleting}
-                className="px-4 py-2 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer disabled:opacity-50"
+                className="w-full sm:w-auto text-center px-4 py-2 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -1993,7 +1992,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                 type="button"
                 onClick={handleConfirmDeleteDaily}
                 disabled={isDeleting}
-                className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
+                className="w-full sm:w-auto justify-center px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>
@@ -2007,8 +2006,8 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
 
       {/* Delete Confirmation Modal for Transaction */}
       {txToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-          <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-3 sm:p-4">
+          <div className="bg-white rounded-xl max-w-md w-full p-4 sm:p-6 shadow-2xl border border-slate-200 animate-in zoom-in-95 duration-150">
             <div className="flex items-center gap-3 text-rose-600 mb-3">
               <div className="w-10 h-10 rounded-full bg-rose-50 border border-rose-200 flex items-center justify-center shrink-0">
                 <Trash2 className="w-5 h-5 text-rose-600" />
@@ -2079,13 +2078,13 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
               </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-end gap-2.5">
+            <div className="mt-6 flex flex-col-reverse sm:flex-row items-center justify-end gap-2 sm:gap-2.5">
               <button
                 id="btn-cancel-delete-tx"
                 type="button"
                 onClick={() => setTxToDelete(null)}
                 disabled={isDeleting}
-                className="px-4 py-2 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer disabled:opacity-50"
+                className="w-full sm:w-auto text-center px-4 py-2 rounded-lg border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer disabled:opacity-50"
               >
                 Cancel
               </button>
@@ -2094,7 +2093,7 @@ export const EpJcDashboard: React.FC<EpJcDashboardProps> = ({
                 type="button"
                 onClick={handleConfirmDeleteTx}
                 disabled={isDeleting}
-                className="px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
+                className="w-full sm:w-auto justify-center px-4 py-2 rounded-lg bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
               >
                 <Trash2 className="w-3.5 h-3.5" />
                 <span>{isDeleting ? "Deleting..." : "Delete Transaction"}</span>
